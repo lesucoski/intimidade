@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Posts Premium - Intimidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --wine: #900C3F;
+            --black: #0A0A0A;
+            --ui-bg: rgba(20, 20, 20, 0.9);
+        }
+
+        body {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Painel de Controle */
+        .controls {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--ui-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            width: 250px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .controls.hidden {
+            transform: translateY(-50%) translateX(-300px);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .theme-btn {
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .theme-btn.active {
+            border-color: var(--gold);
+        }
+
+        .theme-seda { background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%); }
+        .theme-veludo { background: radial-gradient(circle at center, #2a0413 0%, #0a0a0a 100%); }
+        .theme-ouro { background: linear-gradient(135deg, #1a1a1a 0%, #2c240d 100%); }
+        .theme-estudio { background: radial-gradient(circle at 50% 40%, #222 0%, #050505 100%); }
+        .theme-abstrato { background: linear-gradient(45deg, #050505, #1a0510, #050505); border: 1px solid rgba(212,175,55,0.3); }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--gold);
+        }
+
+        .btn-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 101;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* O Quadrado do Instagram */
+        .instagram-post {
+            width: 1080px; 
+            height: 1080px;
+            background-color: #0A0A0A;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+            text-align: center;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transform: scale(0.5); /* Escala para visualização no navegador */
+            transform-origin: center;
+            transition: all 3s ease-in-out;
+        }
+
+        /* Efeitos de Fundo Dinâmicos */
+        .post-bg-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .instagram-post::before {
+            content: '';
+            position: absolute;
+            top: 50px; bottom: 50px; left: 50px; right: 50px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            pointer-events: none;
+        }
+
+        .sup-title {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            outline: none;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 72px;
+            line-height: 1.2;
+            color: var(--gold);
+            outline: none;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .brand-logo {
+            position: absolute;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            outline: none;
+        }
+
+        .logo-icon {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--gold);
+            font-style: italic;
+            width: 60px; height: 60px;
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #EAEAEA;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .logo-sub {
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Classes de Tema */
+        .theme-seda-bg { background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%) !important; }
+        .theme-veludo-bg { background: radial-gradient(circle at center, #3a051a 0%, #050505 100%) !important; }
+        .theme-ouro-bg { background: linear-gradient(135deg, #1a1a1a 0%, #2c240d 100%) !important; }
+        .theme-estudio-bg { background: radial-gradient(circle at 50% 30%, #333 0%, #050505 100%) !important; }
+        
+        .theme-abstrato-bg {
+            background: #050505 !important;
+            overflow: hidden;
+        }
+
+        /* Canvas de Partículas estilo Hero Header (Topo) */
+        #abstractCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45%; /* Ocupa a metade superior */
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            z-index: 5;
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+
+        .active-mist #abstractCanvas {
+            opacity: 1;
+        }
+
+        .text-container {
+            position: absolute;
+            top: 55%; /* Levemente abaixo do centro para dar espaço ao Hero */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sup-title {
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .main-title {
+            width: 100%;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            position: absolute;
+            bottom: 80px;
+            z-index: 10;
+        }
+
+        @media (max-width: 1200px) {
+            .instagram-post { transform: scale(0.4); }
+        }
+        @media (max-width: 800px) {
+            .instagram-post { transform: scale(0.3); }
+            .controls { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-toggle" onclick="toggleUI()">Ocultar Menu</button>
+
+    <div class="controls" id="controls">
+        <h3 style="margin-top:0; color:var(--gold); font-family: 'Playfair Display', serif;">Post Studio 🖤</h3>
+        
+        <div class="control-group">
+            <label>Atmosfera</label>
+            <div class="theme-grid">
+                <div class="theme-btn theme-seda active" onclick="setTheme('seda', this)">SEDA</div>
+                <div class="theme-btn theme-veludo" onclick="setTheme('veludo', this)">VELUDO</div>
+                <div class="theme-btn theme-ouro" onclick="setTheme('ouro', this)">OURO</div>
+                <div class="theme-btn theme-estudio" onclick="setTheme('estudio', this)">ESTÚDIO</div>
+                <div class="theme-btn theme-abstrato" style="grid-column: span 2" onclick="setTheme('abstrato', this)">✨ ABSTRATO (PARTÍCULAS)</div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Tamanho do Texto</label>
+            <input type="range" min="40" max="120" value="72" oninput="updateFontSize(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>Alinhamento</label>
+            <div style="display:flex; gap:5px;">
+                <button class="theme-btn" style="flex:1; background:#333;" onclick="setAlign('left')">ESQ</button>
+                <button class="theme-btn" style="flex:1; background:#333;" onclick="setAlign('center')">CEN</button>
+                <button class="theme-btn" style="flex:1; background:#333;" onclick="setAlign('right')">DIR</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 11px; color: #666; line-height: 1.5;">
+            DICA: Clique nos textos do post para editar. Quando terminar, oculte o menu e tire um print da tela!
+        </div>
+    </div>
+
+    <div class="instagram-post theme-seda-bg" id="post">
+        <canvas id="abstractCanvas"></canvas>
+        
+        <div class="text-container">
+            <div class="sup-title" contenteditable="true">DICA DE ANIVERSÁRIO</div>
+            <div class="main-title" id="mainTitle" contenteditable="true">O date perfeito não<br>precisa de uma<br>reserva cara.</div>
+        </div>
+        
+        <div class="brand-logo" contenteditable="true">
+            <div class="logo-icon">I</div>
+            <div class="logo-text">Intimidade</div>
+            <div class="logo-sub">EXPERIÊNCIA SENSORIAL</div>
+        </div>
+    </div>
+
+    <script>
+        function setTheme(theme, btn) {
+            const post = document.getElementById('post');
+            
+            // Remove todos os temas anteriores
+            post.classList.remove('theme-seda-bg', 'theme-veludo-bg', 'theme-ouro-bg', 'theme-estudio-bg', 'theme-abstrato-bg', 'active-mist');
+            
+            // Adiciona o novo tema
+            post.classList.add('theme-' + theme + '-bg');
+            
+            // Ativa a névoa se for abstrato
+            if(theme === 'abstrato') {
+                post.classList.add('active-mist');
+                if(!particlesInitialized) initParticles();
+            }
+            
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function updateFontSize(size) {
+            document.getElementById('mainTitle').style.fontSize = size + 'px';
+        }
+
+        function setAlign(align) {
+            document.getElementById('post').style.textAlign = align;
+            document.getElementById('post').style.alignItems = 
+                align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
+        }
+
+        function toggleUI() {
+            const controls = document.getElementById('controls');
+            const btn = document.querySelector('.btn-toggle');
+            controls.classList.toggle('hidden');
+            btn.innerText = controls.classList.contains('hidden') ? 'Mostrar Menu' : 'Ocultar Menu';
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'h' || e.key === 'H') toggleUI();
+        });
+
+        // --- SISTEMA DE PARTÍCULAS PREMIUM (CANVAS) ---
+        let particlesInitialized = false;
+        const canvas = document.getElementById('abstractCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationState = 'floating'; // floating, forming, merging
+        let stateTimer = 0;
+
+        // Silhuetas "Sexier" (Caminhos mais detalhados e curvos)
+        // Feminino: Ampulheta elegante
+        const femalePathData = 'M50,15c5-1,10,3,10,8s-4,10-10,10s-10-5-10-10S45,14,50,15z M50,35c-5,0-15,5-15,15c0,10,10,15,10,30s-10,30-10,40c0,10,20,15,30,15s30-5,30-15c0-10-10-25-10-40s10-20,10-30C75,40,65,35,50,35z';
+        // Masculino: Tronco em V
+        const malePathData = 'M50,10c6,0,11,5,11,11s-5,11-11,11s-11-5-11-11S44,10,50,10z M50,35c-15,0-25,5-25,20c0,15,10,20,10,40s-5,45-5,55c0,10,20,10,40,10s40,0,40-10c0-10-5-35-5-55s10-25,10-40C75,40,65,35,50,35z';
+        
+        const femalePath = new Path2D(femalePathData);
+        const malePath = new Path2D(malePathData);
+
+        function initParticles() {
+            particlesInitialized = true;
+            canvas.width = 1080;
+            canvas.height = 486; // 45% de 1080
+            particles = [];
+            stateTimer = 0;
+            animationState = 'floating';
+            
+            // Criar 100 partículas para formar os corpos
+            for(let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 5 + 1.5,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    color: i % 2 === 0 ? 'rgba(212, 175, 55, ' : 'rgba(144, 12, 63, ',
+                    alpha: Math.random() * 0.4 + 0.2,
+                    targetX: null, targetY: null,
+                    isMale: i % 2 === 0
+                });
+            }
+            animateParticles();
+        }
+
+        function animateParticles() {
+            if(!document.getElementById('post').classList.contains('active-mist')) {
+                requestAnimationFrame(animateParticles);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stateTimer++;
+
+            // Ritmo fluído
+            if (stateTimer > 300 && animationState === 'floating') animationState = 'forming';
+            if (stateTimer > 800 && animationState === 'forming') animationState = 'merging';
+            if (stateTimer > 1500) stateTimer = 0, animationState = 'floating'; 
+
+            particles.forEach((p, i) => {
+                if (animationState === 'floating') {
+                    p.x += p.vx * 0.8; p.y += p.vy * 0.8;
+                    if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                } else {
+                    const isMale = p.isMale;
+                    let targetBaseX, targetBaseY;
+
+                    if (animationState === 'forming') {
+                        // Silhuetas separadas no HERO
+                        targetBaseX = isMale ? 350 : 730;
+                        targetBaseY = 180; // Sobe um pouco mais para dar espaço ao texto central
+                        const angle = (i / 50) * Math.PI * 2;
+                        const r = isMale ? 60 : 50;
+                        p.targetX = targetBaseX + Math.cos(angle) * r * (Math.sin(i*0.1) + 1);
+                        p.targetY = targetBaseY + Math.sin(angle) * r * (Math.cos(i*0.1) + 1.5);
+                    } else {
+                        // FUSÃO NO LOGO (O "I" Central) no HERO
+                        targetBaseX = 540;
+                        targetBaseY = 180;
+                        
+                        // REGRA: Dourada forma o I, Vermelha forma a Bola
+                        if (p.color.includes('212')) {
+                            // DOURADA -> Haste do I
+                            p.targetX = targetBaseX + (Math.random() - 0.5) * 10;
+                            p.targetY = targetBaseY + (Math.random() - 0.5) * 140;
+                        } else {
+                            // VERMELHA -> Círculo
+                            const angle = (i / 50) * Math.PI * 2;
+                            p.targetX = targetBaseX + Math.cos(angle) * 90;
+                            p.targetY = targetBaseY + Math.sin(angle) * 90;
+                        }
+                    }
+
+                    p.x += (p.targetX - p.x) * 0.04;
+                    p.y += (p.targetY - p.y) * 0.04;
+                }
+
+                // Desenho das partículas
+                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 2);
+                grad.addColorStop(0, p.color + p.alpha + ')');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius * 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Sombra das silhuetas (muito sutil)
+            if (animationState !== 'floating') {
+                ctx.globalAlpha = 0.02;
+                ctx.save();
+                ctx.translate(animationState === 'merging' ? 540-250 : 350-250, 350-50);
+                ctx.scale(5, 5); ctx.fillStyle = '#D4AF37'; ctx.fill(malePath);
+                ctx.restore();
+                ctx.save();
+                ctx.translate(animationState === 'merging' ? 540-250 : 730-250, 350-50);
+                ctx.scale(5, 5); ctx.fillStyle = '#900C3F'; ctx.fill(femalePath);
+                ctx.restore();
+                ctx.globalAlpha = 1.0;
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        function updateFontSize(size) {
+            document.getElementById('mainTitle').style.fontSize = size + 'px';
+        }
+
+        function setAlign(align) {
+            document.getElementById('post').style.textAlign = align;
+            document.getElementById('post').style.alignItems = 
+                align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
+        }
+
+        function toggleUI() {
+            const controls = document.getElementById('controls');
+            const btn = document.querySelector('.btn-toggle');
+            controls.classList.toggle('hidden');
+            btn.innerText = controls.classList.contains('hidden') ? 'Mostrar Menu' : 'Ocultar Menu';
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'h' || e.key === 'H') toggleUI();
+        });
+    </script>
+</body>
+</html>

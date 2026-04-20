@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Boutique Intimidade - Monte seu Kit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { "primary": "#44152d", "secondary": "#C5A059", "background": "#050505", "surface": "#1c1c1e" },
+                    fontFamily: { "headline": ["Noto Serif", "serif"], "body": ["Manrope", "sans-serif"] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #050505; color: #e0e0e0; }
+        .gold-gradient { background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%); }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); }
+        #cart-drawer { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+        #cart-drawer.open { transform: translateX(0); }
+        .item-card { transition: all 0.3s ease; }
+        .item-card.selected { border-color: #C5A059 !important; background: rgba(197,160,89,0.1); }
+        .item-card.selected .check-icon { opacity: 1; }
+        .check-icon { opacity: 0; transition: opacity 0.2s; }
+        .quiz-screen { display: none; animation: fadeIn 0.4s ease; }
+        .quiz-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .product-img { height: 220px; object-fit: cover; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-screen-2xl mx-auto flex justify-between items-center px-8 py-4">
+            <a href="index.html" class="text-2xl font-serif italic text-white">Intimidade</a>
+            <button onclick="toggleCart()" class="relative text-secondary">
+                <span class="material-symbols-outlined text-3xl">shopping_bag</span>
+                <span id="cart-count" class="absolute -top-1 -right-1 gold-gradient text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-screen-xl mx-auto px-6 pt-32">
+
+        <!-- Atelier da Intimidade - Quiz de Descoberta -->
+        <section class="mb-32">
+            <div class="glass rounded-[3rem] p-10 md:p-16 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 gold-gradient"></div>
+
+                <!-- Intro -->
+                <div id="quiz-intro" class="quiz-screen active text-center">
+                    <span class="material-symbols-outlined text-secondary text-5xl mb-6">auto_awesome</span>
+                    <h2 class="font-headline text-4xl text-white italic mb-4">Atelier da Intimidade</h2>
+                    <p class="text-on-surface-variant max-w-xl mx-auto mb-10">Responda duas perguntas e criamos o kit ideal para vocês. Você poderá personalizar livremente depois.</p>
+                    <button onclick="showQuiz('quiz-budget')" class="gold-gradient text-black font-bold py-4 px-12 rounded-full hover:scale-105 transition-all">Começar Descoberta</button>
+                </div>
+
+                <!-- Pergunta 1: Orçamento -->
+                <div id="quiz-budget" class="quiz-screen">
+                    <h3 class="font-headline text-2xl text-white mb-2 text-center">Quanto desejam investir nessa experiência?</h3>
+                    <p class="text-on-surface-variant text-center text-sm mb-10">Sem compromisso — você pode ajustar depois.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                        <button onclick="selectBudget('basico', 200)" class="budget-btn glass p-8 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="block text-2xl font-bold text-secondary mb-2">Até R$ 200</span>
+                            <span class="text-xs text-on-surface-variant">Experiência Essencial</span>
+                        </button>
+                        <button onclick="selectBudget('medio', 400)" class="budget-btn glass p-8 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="block text-2xl font-bold text-secondary mb-2">R$ 200 – 400</span>
+                            <span class="text-xs text-on-surface-variant">Exploração Completa</span>
+                        </button>
+                        <button onclick="selectBudget('premium', 9999)" class="budget-btn glass p-8 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="block text-2xl font-bold text-secondary mb-2">Sem limite</span>
+                            <span class="text-xs text-on-surface-variant">Êxtase Total</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pergunta 2: Tipo de Diversão -->
+                <div id="quiz-vibe" class="quiz-screen">
+                    <h3 class="font-headline text-2xl text-white mb-2 text-center">Que tipo de experiência buscam?</h3>
+                    <p class="text-on-surface-variant text-center text-sm mb-10">Podem escolher mais de uma opção.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto mb-10">
+                        <button onclick="toggleVibe(this, 'massagem')" class="vibe-btn glass p-5 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="material-symbols-outlined text-secondary text-3xl block mb-2">back_hand</span>
+                            <span class="text-xs font-bold block">Massagem Sensual</span>
+                        </button>
+                        <button onclick="toggleVibe(this, 'restricao')" class="vibe-btn glass p-5 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="material-symbols-outlined text-secondary text-3xl block mb-2">link</span>
+                            <span class="text-xs font-bold block">Dominação & Restrição</span>
+                        </button>
+                        <button onclick="toggleVibe(this, 'brinquedo')" class="vibe-btn glass p-5 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="material-symbols-outlined text-secondary text-3xl block mb-2">bolt</span>
+                            <span class="text-xs font-bold block">Brinquedos & Vibração</span>
+                        </button>
+                        <button onclick="toggleVibe(this, 'surpresa')" class="vibe-btn glass p-5 rounded-2xl border border-white/10 hover:border-secondary transition-all text-center">
+                            <span class="material-symbols-outlined text-secondary text-3xl block mb-2">auto_awesome</span>
+                            <span class="text-xs font-bold block">Surpreenda-me!</span>
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="buildRecommendation()" class="gold-gradient text-black font-bold py-4 px-12 rounded-full hover:scale-105 transition-all">Ver Sugestão →</button>
+                    </div>
+                </div>
+
+                <!-- Resultado: Kit Sugerido -->
+                <div id="quiz-result" class="quiz-screen">
+                    <div class="text-center mb-10">
+                        <span class="material-symbols-outlined text-secondary text-4xl mb-3">favorite</span>
+                        <h3 class="font-headline text-3xl text-white italic mb-2" id="result-title">Seu Kit Personalizado</h3>
+                        <p class="text-on-surface-variant text-sm" id="result-desc"></p>
+                    </div>
+
+                    <!-- Itens sugeridos (checkboxes livres) -->
+                    <div id="suggested-items" class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-4xl mx-auto mb-10"></div>
+
+                    <div class="text-center space-y-4">
+                        <div class="glass p-4 rounded-2xl max-w-sm mx-auto mb-6">
+                            <p class="text-xs text-secondary font-bold mb-1">Total selecionado</p>
+                            <p id="kit-total" class="text-2xl font-bold text-white">R$ 0,00</p>
+                            <p id="kit-discount" class="text-xs text-secondary hidden">✨ 15% desconto aplicado (kit com 3+)</p>
+                        </div>
+                        <button onclick="addKitToCart()" class="gold-gradient text-black font-bold py-4 px-12 rounded-full hover:scale-105 transition-all">Adicionar Kit ao Carrinho</button>
+                        <br>
+                        <button onclick="showQuiz('quiz-intro')" class="text-on-surface-variant text-xs underline underline-offset-4">Refazer Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catálogo Completo -->
+        <section class="mb-16">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="font-headline text-3xl text-white italic">Catálogo Completo</h2>
+                <p class="text-xs text-on-surface-variant">Adicione itens avulsos ao carrinho</p>
+            </div>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8"></div>
+        </section>
+
+        <!-- Selos de Confiança -->
+        <section class="py-16 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+            <div class="flex flex-col items-center">
+                <span class="material-symbols-outlined text-secondary text-4xl mb-4">inventory_2</span>
+                <h4 class="font-headline text-lg mb-2">Embalagem Discreta</h4>
+                <p class="text-xs text-on-surface-variant">Sem identificação do conteúdo na caixa.</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="material-symbols-outlined text-secondary text-4xl mb-4">local_shipping</span>
+                <h4 class="font-headline text-lg mb-2">Envio Priority</h4>
+                <p class="text-xs text-on-surface-variant">Entrega rápida e segura em todo o Brasil.</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="material-symbols-outlined text-secondary text-4xl mb-4">verified_user</span>
+                <h4 class="font-headline text-lg mb-2">Compra 100% Segura</h4>
+                <p class="text-xs text-on-surface-variant">Privacidade total garantida.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Carrinho Lateral -->
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full md:w-[430px] bg-background border-l border-white/10 z-[100] shadow-2xl p-8 flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="font-headline text-2xl text-white italic">Seu Carrinho</h2>
+            <button onclick="toggleCart()" class="text-white/40 hover:text-white"><span class="material-symbols-outlined text-2xl">close</span></button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto space-y-4">
+            <p id="empty-msg" class="text-on-surface-variant text-center mt-20 italic text-sm">Seu carrinho está vazio.</p>
+        </div>
+        <div class="pt-6 border-t border-white/10 mt-auto">
+            <div id="discount-badge" class="mb-4 p-3 bg-secondary/10 border border-secondary/20 rounded-xl hidden">
+                <p class="text-xs text-secondary text-center font-bold">✨ Desconto de Kit 15% aplicado</p>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-on-surface-variant text-sm">Total</span>
+                <span id="cart-total" class="text-2xl font-bold text-white">R$ 0,00</span>
+            </div>
+            <button onclick="finalizePurchase()" class="w-full gold-gradient text-black font-bold py-4 rounded-full hover:scale-105 transition-all text-xs uppercase tracking-widest">
+                Finalizar Pedido Discreto
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] hidden"></div>
+
+    <!-- Mobile Nav -->
+    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 px-6 bg-black/80 backdrop-blur-xl border-t border-white/5 z-50">
+        <a href="index.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[9px] uppercase tracking-widest">Home</span>
+        </a>
+        <a href="loja.html" class="text-secondary flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            <span class="text-[9px] uppercase tracking-widest">Loja</span>
+        </a>
+        <a href="atmosfera.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined">graphic_eq</span>
+            <span class="text-[9px] uppercase tracking-widest">Atmosfera</span>
+        </a>
+        <a href="jogo.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined">casino</span>
+            <span class="text-[9px] uppercase tracking-widest">Oráculo</span>
+        </a>
+    </nav>
+
+    <script>
+        // ============================================
+        // CATÁLOGO DE PRODUTOS (Custo → Preço de Venda)
+        // AliExpress: custo x2 (impostos + margem)
+        // Litoral: custo base real
+        // ============================================
+        const CATALOG = [
+            {
+                id: 'baba_lub',
+                name: 'Baba Lub (Lubrificante Intt)',
+                desc: 'Lubrificante íntimo premium.',
+                custo: 64.39, // Litoral
+                preco: 149,
+                categoria: 'massagem',
+                icon: 'water_drop',
+                img: 'assets/produtos-flat.png'
+            },
+            {
+                id: 'oleo_tantrik',
+                name: 'Óleo Tantrik 120ml',
+                desc: 'Óleo corporal sensual com fragrância exótica.',
+                custo: 59.90, // Litoral estimado
+                preco: 129,
+                categoria: 'massagem',
+                icon: 'spa',
+                img: 'assets/kit-luxo.png'
+            },
+            {
+                id: 'venda_seda',
+                name: 'Venda de Seda Premium',
+                desc: 'Privação sensorial com toque de luxo.',
+                custo: 32.98 * 2, // AliExpress x2
+                preco: 149,
+                categoria: 'restricao',
+                icon: 'visibility_off',
+                img: 'assets/tutorial-no.png'
+            },
+            {
+                id: 'algemas_luxo',
+                name: 'Algemas Bracelete Luxo',
+                desc: 'Restrição elegante com acabamento premium.',
+                custo: 64.39 * 2, // AliExpress x2
+                preco: 289,
+                categoria: 'restricao',
+                icon: 'link',
+                img: 'assets/produtos-flat.png'
+            },
+            {
+                id: 'chicote_couro',
+                name: 'Chicote em Couro 30cm',
+                desc: 'Domínio elegante com toque preciso.',
+                custo: 45.00, // Litoral estimado
+                preco: 129,
+                categoria: 'restricao',
+                icon: 'bolt',
+                img: ''
+            },
+            {
+                id: 'amarras_submission',
+                name: 'Amarras Submission',
+                desc: 'Restrição em tecido macio, confortável e segura.',
+                custo: 38.00, // Litoral estimado
+                preco: 99,
+                categoria: 'restricao',
+                icon: 'gesture',
+                img: ''
+            },
+            {
+                id: 'egg_magical',
+                name: 'Egg Masturbador Magical Kiss',
+                desc: 'Prazer portátil e surpreendente.',
+                custo: 19.35 * 2, // AliExpress x2
+                preco: 89,
+                categoria: 'brinquedo',
+                icon: 'egg',
+                img: ''
+            },
+            {
+                id: 'vibrador_gspot',
+                name: 'Vibrador G-Spot Premium',
+                desc: 'Estimulação precisa com múltiplos modos.',
+                custo: 64.39 * 2, // AliExpress x2
+                preco: 259,
+                categoria: 'brinquedo',
+                icon: 'bolt',
+                img: 'assets/hero.png'
+            }
+        ];
+
+        // Recomendações por vibe e budget
+        const RECOMMENDATIONS = {
+            massagem:   ['baba_lub', 'oleo_tantrik', 'venda_seda'],
+            restricao:  ['amarras_submission', 'algemas_luxo', 'venda_seda'],
+            brinquedo:  ['vibrador_gspot', 'egg_magical', 'oleo_tantrik'],
+            surpresa:   ['baba_lub', 'venda_seda', 'chicote_couro', 'egg_magical']
+        };
+
+        let cart = [];
+        let selectedVibes = [];
+        let selectedBudget = 9999;
+        let selectedKitItems = [];
+
+        // =====================
+        // QUIZ LOGIC
+        // =====================
+        function showQuiz(id) {
+            document.querySelectorAll('.quiz-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function selectBudget(tier, limit) {
+            selectedBudget = limit;
+            showQuiz('quiz-vibe');
+        }
+
+        function toggleVibe(btn, vibe) {
+            btn.classList.toggle('selected');
+            if (selectedVibes.includes(vibe)) {
+                selectedVibes = selectedVibes.filter(v => v !== vibe);
+            } else {
+                selectedVibes.push(vibe);
+            }
+        }
+
+        function buildRecommendation() {
+            if (selectedVibes.length === 0) selectedVibes = ['surpresa'];
+
+            let suggested = [];
+            selectedVibes.forEach(v => {
+                (RECOMMENDATIONS[v] || []).forEach(id => {
+                    if (!suggested.includes(id)) suggested.push(id);
+                });
+            });
+
+            // Filtra por budget
+            suggested = suggested.filter(id => {
+                const p = CATALOG.find(c => c.id === id);
+                return p && p.preco <= selectedBudget;
+            });
+
+            renderSuggestedItems(suggested);
+            showQuiz('quiz-result');
+        }
+
+        function renderSuggestedItems(ids) {
+            selectedKitItems = [...ids];
+            const container = document.getElementById('suggested-items');
+            container.innerHTML = '';
+
+            CATALOG.forEach(p => {
+                const isSelected = ids.includes(p.id);
+                const div = document.createElement('div');
+                div.id = 'kit-item-' + p.id;
+                div.className = 'item-card glass p-4 rounded-2xl border border-white/10 cursor-pointer text-center relative' + (isSelected ? ' selected' : '');
+                div.onclick = () => toggleKitItem(p.id, p.preco, div);
+                div.innerHTML = `
+                    <span class="material-symbols-outlined text-secondary text-3xl block mb-2">${p.icon}</span>
+                    <span class="check-icon absolute top-2 right-2 text-secondary material-symbols-outlined text-sm">check_circle</span>
+                    <p class="text-xs font-bold leading-tight mb-1">${p.name}</p>
+                    <p class="text-secondary text-xs">R$ ${p.preco.toFixed(2)}</p>
+                `;
+                container.appendChild(div);
+            });
+            updateKitTotal();
+        }
+
+        function toggleKitItem(id, preco, el) {
+            el.classList.toggle('selected');
+            if (selectedKitItems.includes(id)) {
+                selectedKitItems = selectedKitItems.filter(i => i !== id);
+            } else {
+                selectedKitItems.push(id);
+            }
+            updateKitTotal();
+        }
+
+        function updateKitTotal() {
+            let total = 0;
+            selectedKitItems.forEach(id => {
+                const p = CATALOG.find(c => c.id === id);
+                if (p) total += p.preco;
+            });
+            const discount = selectedKitItems.length >= 3;
+            if (discount) total = total * 0.85;
+            document.getElementById('kit-total').innerText = `R$ ${total.toFixed(2)}`;
+            const discEl = document.getElementById('kit-discount');
+            discount ? discEl.classList.remove('hidden') : discEl.classList.add('hidden');
+        }
+
+        function addKitToCart() {
+            selectedKitItems.forEach(id => {
+                const p = CATALOG.find(c => c.id === id);
+                if (p) addToCart(p.name, p.preco);
+            });
+            showQuiz('quiz-intro');
+        }
+
+        // =====================
+        // PRODUTO GRID
+        // =====================
+        function renderProductGrid() {
+            const grid = document.getElementById('product-grid');
+            CATALOG.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'group';
+                div.innerHTML = `
+                    <div class="relative overflow-hidden rounded-2xl mb-4 bg-surface aspect-square flex items-center justify-center">
+                        ${p.img ? `<img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>` : `<span class="material-symbols-outlined text-secondary/30 text-7xl">${p.icon}</span>`}
+                    </div>
+                    <h4 class="text-sm font-bold text-white mb-1 leading-tight">${p.name}</h4>
+                    <p class="text-on-surface-variant text-[11px] mb-3">${p.desc}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-secondary font-bold">R$ ${p.preco.toFixed(2)}</span>
+                        <button onclick="addToCart('${p.name}', ${p.preco})" class="w-8 h-8 rounded-full border border-secondary/50 text-secondary flex items-center justify-center hover:bg-secondary hover:text-black transition-all">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+        renderProductGrid();
+
+        // =====================
+        // CART LOGIC
+        // =====================
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('hidden');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartUI();
+            if (!document.getElementById('cart-drawer').classList.contains('open')) toggleCart();
+        }
+
+        function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-on-surface-variant text-center mt-20 italic text-sm">Seu carrinho está vazio.</p>';
+            }
+
+            cart.forEach((item, i) => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center glass p-3 rounded-xl';
+                div.innerHTML = `
+                    <div>
+                        <p class="text-white text-sm font-bold">${item.name}</p>
+                        <p class="text-secondary text-xs">R$ ${item.price.toFixed(2)}</p>
+                    </div>
+                    <button onclick="removeFromCart(${i})" class="text-white/20 hover:text-white/60"><span class="material-symbols-outlined text-sm">close</span></button>
+                `;
+                container.appendChild(div);
+            });
+
+            const discount = cart.length >= 3;
+            if (discount) total = total * 0.85;
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('cart-count').innerText = cart.length;
+            const badge = document.getElementById('discount-badge');
+            discount ? badge.classList.remove('hidden') : badge.classList.add('hidden');
+        }
+
+        function finalizePurchase() {
+            if (cart.length === 0) return alert('Seu carrinho está vazio!');
+            alert('✨ Pedido confirmado com discrição total! Você receberá um e-mail em instantes.');
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        }
+    </script>
+</body>
+</html>

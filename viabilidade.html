@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Viabilidade Financeira — Intimidade</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4AF37;--wine:#900C3F;--bg:#0A0A0A;--card:#141414;--border:rgba(212,175,55,0.15);--text:#e8e8e8;--muted:#777}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;padding:40px 20px}
+h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:2rem;text-align:center;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);font-size:.85rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;max-width:1400px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+.card h2{font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+.row label{font-size:.82rem;color:var(--muted);flex:1;min-width:140px}
+.row input,.row select{background:#1e1e1e;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.85rem;padding:7px 10px;width:130px;text-align:right;outline:none;transition:.2s}
+.row input:focus,.row select:focus{border-color:var(--gold)}
+.row select{text-align:left}
+.result-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.result-row span:first-child{font-size:.82rem;color:var(--muted)}
+.result-row .val{font-size:.92rem;font-weight:600;color:var(--text)}
+.val.green{color:#4ade80}.val.red{color:#f87171}.val.gold{color:var(--gold)}
+.big-result{background:linear-gradient(135deg,#1a1a1a,#0d0d0d);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:1400px;margin:24px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px}
+.metric{text-align:center}
+.metric .label{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
+.metric .number{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold)}
+.metric .number.red{color:#f87171}.metric .number.green{color:#4ade80}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.7rem;font-weight:600;letter-spacing:1px}
+.badge.ok{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
+.badge.warn{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.badge.bad{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.3)}
+.note{font-size:.72rem;color:var(--muted);margin-top:14px;line-height:1.6;border-top:1px solid var(--border);padding-top:12px}
+.channel-tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{padding:6px 14px;border-radius:50px;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:.2s}
+.tab.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{text-align:left;padding:8px 10px;color:var(--muted);font-weight:400;letter-spacing:1px;font-size:.7rem;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+tr:last-child td{border-bottom:none}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.neg{color:#f87171} td.pos{color:#4ade80}
+/* Kit Builder */
+.kit-item{background:#1a1a1a;border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.kit-item-top{display:grid;grid-template-columns:1fr 100px 28px;gap:6px;align-items:center}
+.kit-item-bot{display:flex;gap:6px;align-items:center;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.04)}
+.kit-item input[type=text]{background:transparent;border:none;color:var(--text);font-size:.8rem;outline:none;width:100%}
+.kit-item input[type=text].dist-input{color:var(--muted);font-size:.68rem;flex:1}
+.kit-item input[type=number]{background:transparent;border:none;color:var(--gold);font-size:.82rem;font-weight:600;outline:none;text-align:right;width:100%}
+.dist-label{font-size:.65rem;color:var(--muted);white-space:nowrap;letter-spacing:.5px}
+.btn-add{width:100%;padding:8px;border-radius:8px;border:1px dashed rgba(212,175,55,.3);background:transparent;color:var(--gold);font-size:.75rem;cursor:pointer;transition:.2s;margin-top:6px;letter-spacing:1px}
+.btn-add:hover{background:rgba(212,175,55,.08)}
+.btn-del{background:transparent;border:none;color:#555;cursor:pointer;font-size:1rem;line-height:1;padding:2px 5px;border-radius:4px;transition:.2s}
+.btn-del:hover{color:#f87171;background:rgba(248,113,113,.1)}
+.kit-section-label{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:14px 0 8px}
+</style>
+</head>
+<body>
+
+<h1>Intimidade</h1>
+<p class="subtitle">Estudo de Viabilidade Financeira</p>
+
+<div class="grid">
+
+  <!-- CUSTO DO PRODUTO — KIT BUILDER DINÂMICO -->
+  <div class="card" style="grid-column: span 1">
+    <h2>🛒 Construtor de Kit (Produtos)</h2>
+
+    <p class="kit-section-label">📦 Produtos do Kit</p>
+    <div id="kit-items">
+      <!-- Itens gerados por JS -->
+    </div>
+    <button class="btn-add" onclick="addItem()">+ Adicionar Produto ao Kit</button>
+
+    <p class="kit-section-label" style="margin-top:18px">📫 Embalagem & Montagem</p>
+    <div class="row"><label>Embalagem premium</label><input type="number" id="emb" value="18" oninput="calc()"></div>
+    <div class="row"><label>Fita / Laço / Adesivo</label><input type="number" id="fita" value="5" oninput="calc()"></div>
+    <div class="row"><label>Mão de obra (montagem)</label><input type="number" id="mao" value="10" oninput="calc()"></div>
+    <div class="row"><label>Material de proteção</label><input type="number" id="prot" value="4" oninput="calc()"></div>
+
+    <div class="divider"></div>
+    <div class="result-row"><span>Subtotal Produtos</span><span class="val" id="subtotal_produtos">—</span></div>
+    <div class="result-row"><span>Subtotal Embalagem/Montagem</span><span class="val" id="subtotal_emb">—</span></div>
+    <div class="result-row"><span><strong>Total Custo / Kit</strong></span><span class="val gold" id="custo_total">—</span></div>
+  </div>
+
+  <!-- CANAL DE VENDA -->
+  <div class="card">
+    <h2>🏪 Canal de Venda e Taxas</h2>
+    <div class="channel-tabs">
+      <button class="tab active" onclick="setCanal('ml',this)">Mercado Livre</button>
+      <button class="tab" onclick="setCanal('sh',this)">Shopee</button>
+      <button class="tab" onclick="setCanal('wp',this)">WhatsApp/Direto</button>
+    </div>
+    <div class="row"><label>Taxa da plataforma (%)</label><input type="number" id="taxa_plat" value="16" step="0.1" oninput="calc()"></div>
+    <div class="row"><label>Taxa Mercado Pago / Pgto (%)</label><input type="number" id="taxa_pgto" value="4.99" step="0.1" oninput="calc()"></div>
+    <div class="row"><label>Frete cobrado do cliente</label><input type="number" id="frete_cliente" value="0" oninput="calc()"></div>
+    <div class="row"><label>Frete pago pelo vendedor</label><input type="number" id="frete_vend" value="22" oninput="calc()"></div>
+    <div class="row"><label>Custo embalagem envio</label><input type="number" id="emb_envio" value="3" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="result-row"><span>Total Taxas + Frete / venda</span><span class="val red" id="total_taxas">—</span></div>
+    <p class="note" id="nota_canal">ML Full: ~16–19% + frete grátis obrigatório em vendas acima de R$79. Shopee: ~12–16% + frete subsidiado. Considere ambos.</p>
+  </div>
+
+  <!-- IMPOSTOS -->
+  <div class="card">
+    <h2>🏛️ Impostos e Regime Fiscal</h2>
+    <div class="row">
+      <label>Regime Tributário</label>
+      <select id="regime" onchange="calcRegime()">
+        <option value="mei">MEI (até R$81k/ano)</option>
+        <option value="simples">Simples Nacional - Comércio</option>
+        <option value="isento">Informal / Isento</option>
+      </select>
+    </div>
+    <div class="row"><label>Alíquota efetiva (%)</label><input type="number" id="aliquota" value="5.07" step="0.01" oninput="calc()"></div>
+    <div class="row"><label>Previsão fat. mensal (R$)</label><input type="number" id="fat_mensal" value="5000" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="result-row"><span>Imposto estimado / mês</span><span class="val red" id="imp_mes">—</span></div>
+    <div class="result-row"><span>Imposto / Kit (pro-rata)</span><span class="val red" id="imp_kit">—</span></div>
+    <p class="note">MEI: INSS fixo ~R$70/mês + ISS R$5 = ~R$75 fixo (não proporcional). Simples Comércio (Anexo I): começa em 4% e vai até 11,2% conforme faturamento. Simples acima de R$360k: Sublimite por estado.</p>
+  </div>
+
+  <!-- PREÇO E MARGEM -->
+  <div class="card">
+    <h2>💰 Preço de Venda e Margem</h2>
+    <div class="row"><label>Preço de venda (R$)</label><input type="number" id="preco" value="249" oninput="calc()"></div>
+    <div class="row"><label>Custo fixo mensal (R$)</label><input type="number" id="fixo" value="800" oninput="calc()"></div>
+    <div class="row"><label>Unidades vendidas/mês</label><input type="number" id="unidades" value="20" oninput="calc()"></div>
+    <div class="row"><label>Marketing / mês (R$)</label><input type="number" id="mkt" value="400" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="result-row"><span>Receita Bruta</span><span class="val" id="receita_bruta">—</span></div>
+    <div class="result-row"><span>(-) Custo Variável Total</span><span class="val red" id="custo_var_total">—</span></div>
+    <div class="result-row"><span>(-) Taxas + Frete Total</span><span class="val red" id="taxa_total_m">—</span></div>
+    <div class="result-row"><span>(-) Impostos</span><span class="val red" id="imp_total">—</span></div>
+    <div class="result-row"><span>(-) Custos Fixos + Mkt</span><span class="val red" id="fixo_total">—</span></div>
+    <div class="divider"></div>
+    <div class="result-row"><span>Lucro Líquido / Mês</span><span class="val green" id="lucro_mes">—</span></div>
+    <div class="result-row"><span>Margem Líquida (%)</span><span class="val gold" id="margem">—</span></div>
+    <div class="result-row"><span>Lucro por Kit</span><span class="val gold" id="lucro_kit">—</span></div>
+  </div>
+
+  <!-- PAYBACK E INVESTIMENTO -->
+  <div class="card">
+    <h2>📈 Investimento e Payback</h2>
+    <div class="row"><label>Estoque inicial (unid.)</label><input type="number" id="estq_und" value="30" oninput="calc()"></div>
+    <div class="row"><label>Domínio + Hospedagem</label><input type="number" id="inv_site" value="200" oninput="calc()"></div>
+    <div class="row"><label>Material visual / fotos</label><input type="number" id="inv_foto" value="500" oninput="calc()"></div>
+    <div class="row"><label>Capital de giro extra</label><input type="number" id="inv_giro" value="300" oninput="calc()"></div>
+    <div class="row"><label>Outros investimentos</label><input type="number" id="inv_outros" value="200" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="result-row"><span>Custo Estoque Inicial</span><span class="val red" id="custo_estq">—</span></div>
+    <div class="result-row"><span>Total Investimento Inicial</span><span class="val red" id="inv_total">—</span></div>
+    <div class="result-row"><span>Ponto de Equilíbrio (unid./mês)</span><span class="val gold" id="break_even">—</span></div>
+    <div class="result-row"><span>Payback (meses)</span><span class="val gold" id="payback">—</span></div>
+    <div class="result-row"><span>ROI Anual estimado</span><span class="val green" id="roi">—</span></div>
+  </div>
+
+  <!-- CENÁRIOS -->
+  <div class="card">
+    <h2>🎯 Cenários de Vendas</h2>
+    <table id="tabela_cenarios">
+      <thead><tr><th>Cenário</th><th>Unid./mês</th><th class="num">Receita</th><th class="num">Lucro</th><th class="num">Margem</th><th>Status</th></tr></thead>
+      <tbody id="tbody_cenarios"></tbody>
+    </table>
+    <p class="note">Cenários baseados nos valores inseridos nos outros cards. Ajuste o preço, custos e taxas para ver os impactos em tempo real.</p>
+  </div>
+
+</div>
+
+<!-- PAINEL PRINCIPAL -->
+<div class="big-result">
+  <div class="metric"><div class="label">Margem Líquida</div><div class="number" id="mg_big">—</div></div>
+  <div class="metric"><div class="label">Lucro / Kit</div><div class="number" id="lk_big">—</div></div>
+  <div class="metric"><div class="label">Break-Even</div><div class="number" id="be_big">— kits</div></div>
+  <div class="metric"><div class="label">Payback</div><div class="number" id="pb_big">— meses</div></div>
+  <div class="metric"><div class="label">ROI Anual</div><div class="number green" id="roi_big">—</div></div>
+  <div class="metric"><div class="label">Viabilidade</div><div class="number" id="via_big">—</div></div>
+</div>
+
+<script>
+let canal = 'ml';
+let itemCount = 0;
+
+const defaultItems = [
+  {nome:'Óleo de Massagem',dist:'Fornecedor A',custo:35},
+  {nome:'Vela Aromática',dist:'Fornecedor A',custo:28},
+  {nome:'Máscara Tapa-olhos',dist:'Fornecedor B',custo:20}
+];
+
+function addItem(nome='',dist='',custo=0) {
+  itemCount++;
+  const id = 'item_'+itemCount;
+  const el = document.createElement('div');
+  el.className = 'kit-item';
+  el.id = id;
+  el.innerHTML = `
+    <div class="kit-item-top">
+      <input type="text" placeholder="Nome do produto" value="${nome}" oninput="calc()" style="font-size:.82rem">
+      <input type="number" placeholder="R$ custo" value="${custo||''}" step="0.01" oninput="calc()" class="kit-cost">
+      <button class="btn-del" onclick="removeItem('${id}')" title="Remover">✕</button>
+    </div>
+    <div class="kit-item-bot">
+      <span class="dist-label">Fornecedor:</span>
+      <input type="text" class="dist-input" placeholder="Nome do distribuidor / fornecedor" value="${dist}" oninput="calc()">
+    </div>`;
+  document.getElementById('kit-items').appendChild(el);
+  calc();
+}
+
+function removeItem(id) {
+  const el = document.getElementById(id);
+  if(el) { el.remove(); calc(); }
+}
+
+function getKitCost() {
+  let total = 0;
+  document.querySelectorAll('.kit-cost').forEach(el => { total += parseFloat(el.value)||0; });
+  return total;
+}
+
+function setCanal(c, el) {
+  canal = c;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const tx = {ml:{plat:16,pgto:4.99,fr:22},sh:{plat:14,pgto:0,fr:15},wp:{plat:0,pgto:3.5,fr:25}};
+  const notas = {
+    ml:'ML Full: ~16–19% + frete grátis obrigatório acima de R$79. Anúncio Clássico: 10-11%. Anúncio Premium: 16-19%.',
+    sh:'Shopee: ~12–16% taxa plataforma + frete subsidiado por campanha. Sem taxa de anúncio obrigatória.',
+    wp:'WhatsApp/Direto: sem taxa de plataforma. Pague apenas gateway de pagamento (~3,5%). Mais margem, menos volume.'
+  };
+  v('taxa_plat', tx[c].plat); v('taxa_pgto', tx[c].pgto); v('frete_vend', tx[c].fr);
+  document.getElementById('nota_canal').textContent = notas[c];
+  calc();
+}
+
+function calcRegime() {
+  const r = gv('regime');
+  const al = {mei:1.5, simples:5.07, isento:0};
+  v('aliquota', al[r]); calc();
+}
+
+function v(id, val) { document.getElementById(id).value = val; }
+function gv(id) { const el = document.getElementById(id); return el && el.tagName === 'SELECT' ? el.value : parseFloat(el && el.value)||0; }
+function fmt(n) { return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function pct(n) { return n.toFixed(1).replace('.',',')+' %'; }
+function set(id, val) { const el = document.getElementById(id); if(el) el.textContent = val; }
+
+function calc() {
+  const prodCost = getKitCost();
+  const embCost = gv('emb') + gv('fita') + gv('mao') + gv('prot');
+  const custoKit = prodCost + embCost;
+
+  set('subtotal_produtos', fmt(prodCost));
+  set('subtotal_emb', fmt(embCost));
+  set('custo_total', fmt(custoKit));
+
+  const preco = gv('preco');
+  const taxaPlat = preco * gv('taxa_plat') / 100;
+  const taxaPgto = preco * gv('taxa_pgto') / 100;
+  const freteVend = Math.max(0, gv('frete_vend') - gv('frete_cliente'));
+  const totalTaxas = taxaPlat + taxaPgto + freteVend + gv('emb_envio');
+  set('total_taxas', fmt(totalTaxas));
+
+  const aliquota = gv('aliquota');
+  const fatMensal = gv('fat_mensal');
+  const impMes = gv('regime') === 'mei' ? 75 : fatMensal * aliquota / 100;
+  const unidades = gv('unidades');
+  const impKit = impMes / Math.max(unidades, 1);
+  set('imp_mes', fmt(impMes));
+  set('imp_kit', fmt(impKit));
+
+  const receita = preco * unidades;
+  const custoVarTotal = custoKit * unidades;
+  const taxaTotalM = totalTaxas * unidades;
+  const fixoTotal = gv('fixo') + gv('mkt');
+  const lucroMes = receita - custoVarTotal - taxaTotalM - impMes - fixoTotal;
+  const margem = receita > 0 ? lucroMes / receita * 100 : 0;
+  const lucroKit = preco - custoKit - totalTaxas - impKit - (fixoTotal / Math.max(unidades, 1));
+
+  set('receita_bruta', fmt(receita));
+  set('custo_var_total', fmt(custoVarTotal));
+  set('taxa_total_m', fmt(taxaTotalM));
+  set('imp_total', fmt(impMes));
+  set('fixo_total', fmt(fixoTotal));
+  set('lucro_mes', fmt(lucroMes));
+  set('margem', pct(margem));
+  set('lucro_kit', fmt(lucroKit));
+
+  // Payback
+  const estoqCusto = custoKit * gv('estq_und');
+  const invTotal = estoqCusto + gv('inv_site') + gv('inv_foto') + gv('inv_giro') + gv('inv_outros');
+  const breakEven = fixoTotal / Math.max(lucroKit, 0.01);
+  const payback = lucroMes > 0 ? invTotal / lucroMes : 999;
+  const roiAnual = invTotal > 0 ? (lucroMes * 12 / invTotal) * 100 : 0;
+  set('custo_estq', fmt(estoqCusto));
+  set('inv_total', fmt(invTotal));
+  set('break_even', breakEven.toFixed(1)+' unid.');
+  set('payback', payback >= 100 ? '> 100' : payback.toFixed(1));
+  set('roi', pct(roiAnual));
+
+  // Big panel
+  set('mg_big', pct(margem));
+  set('lk_big', fmt(lucroKit));
+  set('be_big', breakEven.toFixed(0)+' kits');
+  set('pb_big', (payback >= 100 ? '> 100' : payback.toFixed(1))+' m.');
+  set('roi_big', pct(roiAnual));
+  const via = margem > 25 ? '✅ Viável' : margem > 10 ? '⚠️ Marginal' : '❌ Inviável';
+  set('via_big', via);
+
+  // Cenários
+  const cenarios = [{n:'Pessimista',u:Math.round(unidades*.5)},{n:'Realista',u:unidades},{n:'Otimista',u:Math.round(unidades*1.5)},{n:'Agressivo',u:Math.round(unidades*2.5)}];
+  const tbody = document.getElementById('tbody_cenarios');
+  tbody.innerHTML = cenarios.map(c => {
+    const r = preco*c.u;
+    const l = r - custoKit*c.u - totalTaxas*c.u - impMes - fixoTotal;
+    const m = r > 0 ? l/r*100 : 0;
+    const cls = l > 0 ? 'pos' : 'neg';
+    const badge = m > 25 ? '<span class="badge ok">OK</span>' : m > 5 ? '<span class="badge warn">⚠</span>' : '<span class="badge bad">❌</span>';
+    return `<tr><td>${c.n}</td><td class="num">${c.u}</td><td class="num">${fmt(r)}</td><td class="num ${cls}">${fmt(l)}</td><td class="num">${pct(m)}</td><td>${badge}</td></tr>`;
+  }).join('');
+
+  // Color big
+  const el = document.getElementById('mg_big');
+  if(el) el.className = 'number'+(margem > 20 ? ' green' : margem > 5 ? '' : ' red');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  defaultItems.forEach(i => addItem(i.nome, i.dist, i.custo));
+});
+</script>
+</body>
+</html>

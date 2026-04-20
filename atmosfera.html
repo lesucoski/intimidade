@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Atmosfera - Intimidade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#44152d",
+                        "secondary": "#C5A059",
+                        "background": "#050505",
+                        "surface": "#1c1c1e",
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            background-color: #050505; 
+            color: #e0e0e0; 
+        }
+        .gold-gradient { background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        .playlist-card:hover .play-icon { transform: scale(1.1); color: #C5A059; }
+        
+        .art-item { position: relative; overflow: hidden; border-radius: 1rem; transition: all 0.5s ease; }
+        .art-item:hover { transform: scale(1.02); }
+        .art-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #050505 0%, transparent 50%); opacity: 0.8; }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Header Simples -->
+    <header class="p-8 flex justify-between items-center">
+        <a href="index.html" class="text-secondary flex items-center gap-2">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-xs uppercase tracking-widest">Voltar</span>
+        </a>
+        <div class="text-2xl font-serif italic text-white">Intimidade</div>
+        <div class="w-10"></div>
+    </header>
+
+    <main class="max-w-screen-xl mx-auto px-6">
+        
+        <!-- Hero Atmosfera -->
+        <section class="py-12 text-center mb-20">
+            <span class="text-secondary font-body text-[10px] uppercase tracking-[0.4em] mb-4 block">Prepare os Sentidos</span>
+            <h1 class="font-headline text-5xl md:text-7xl text-white mb-8 italic">O Som do Desejo</h1>
+            <p class="text-on-surface-variant max-w-xl mx-auto text-lg leading-relaxed">
+                Playlists exclusivas criadas por IA e curadoria humana para guiar o ritmo da sua noite.
+            </p>
+        </section>
+
+        <!-- Playlists -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+            <!-- Spotify Embed for Midnight Velvet -->
+            <div class="playlist-card glass p-2 rounded-[2rem] relative group cursor-pointer transition-all hover:bg-white/5 overflow-hidden">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0S06siFu07p?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div onclick="toggleAudio('jazz', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3')" class="playlist-card glass p-8 rounded-[2rem] relative group cursor-pointer border-secondary/20 transition-all hover:bg-white/5" id="card-jazz">
+                <div class="w-12 h-12 rounded-full gold-gradient flex items-center justify-center text-black mb-6 play-icon transition-transform">
+                    <span class="material-symbols-outlined" id="icon-jazz">play_arrow</span>
+                </div>
+                <h3 class="font-headline text-2xl text-white mb-2">Champagne Jazz</h3>
+                <p class="text-on-surface-variant text-sm">Sofisticação e ritmo clássico para momentos a dois.</p>
+                <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full w-0 gold-gradient transition-all duration-300" id="progress-jazz"></div>
+                </div>
+            </div>
+
+            <div onclick="toggleAudio('santuario', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3')" class="playlist-card glass p-8 rounded-[2rem] relative group cursor-pointer transition-all hover:bg-white/5" id="card-santuario">
+                <div class="w-12 h-12 rounded-full gold-gradient flex items-center justify-center text-black mb-6 play-icon transition-transform">
+                    <span class="material-symbols-outlined" id="icon-santuario">play_arrow</span>
+                </div>
+                <h3 class="font-headline text-2xl text-white mb-2">Santuário Profundo</h3>
+                <p class="text-on-surface-variant text-sm">Batidas tribais e sensoriais para exploração total.</p>
+                <div class="mt-6 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full w-0 gold-gradient transition-all duration-300" id="progress-santuario"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Native Audio Element -->
+        <audio id="main-audio" preload="auto"></audio>
+
+        <!-- Tutorial: A Arte da Amarração -->
+        <section class="py-32 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+                <span class="inline-block py-1 px-3 border border-secondary text-secondary font-body text-[10px] uppercase tracking-widest rounded-full mb-8">Tutorial: Kit Iniciante</span>
+                <h2 class="font-headline text-4xl md:text-5xl text-white mb-8 italic">O Nó de Seda</h2>
+                <p class="text-on-surface-variant text-lg leading-relaxed mb-8">
+                    Aprenda o segredo do "Quick Release": um nó que oferece a segurança da restrição, mas que se desfaz instantaneamente com um único puxão do parceiro.
+                </p>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-start gap-4">
+                        <span class="text-secondary font-bold">01.</span>
+                        <span>Dobre o lenço em três partes para criar uma fita macia.</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="text-secondary font-bold">02.</span>
+                        <span>Envolva o pulso suavemente, deixando uma alça livre.</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="text-secondary font-bold">03.</span>
+                        <span>Passe a ponta por dentro da alça, mas não aperte.</span>
+                    </li>
+                </ul>
+                <button onclick="simulatePurchase('Kit Iniciação')" class="gold-gradient text-black font-bold py-4 px-10 rounded-full hover:scale-105 transition-all">Comprar Kit Iniciação (Lenço + Venda)</button>
+            </div>
+            <div class="relative">
+                <img src="assets/tutorial-no.png" alt="Tutorial do Nó" class="rounded-[2rem] shadow-2xl border border-white/10"/>
+                <div class="absolute -bottom-6 -right-6 glass p-6 rounded-2xl max-w-[200px]">
+                    <p class="text-[10px] uppercase tracking-widest text-secondary mb-2">Dica de Especialista</p>
+                    <p class="text-xs italic">"A confiança é o afrodisíaco mais potente."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galeria "Santuário" (Imagens Estigantes) -->
+        <section class="py-32 border-t border-white/5">
+            <div class="text-center mb-20">
+                <h2 class="font-headline text-4xl text-white mb-4 italic">Galeria Santuário</h2>
+                <p class="text-on-surface-variant text-sm uppercase tracking-widest">A arte do Kama Sutra Moderno</p>
+            </div>
+            
+            <div class="columns-1 md:columns-3 gap-8 space-y-8">
+                <div class="art-item">
+                    <img src="assets/hero.png" alt="Art 1" class="w-full"/>
+                </div>
+                <div class="art-item">
+                    <img src="https://images.unsplash.com/photo-1534120247760-c44c3e4a62f1?auto=format&fit=crop&q=80&w=800" alt="Art 2" class="w-full"/>
+                </div>
+                <div class="art-item">
+                    <img src="https://images.unsplash.com/photo-1544161515-4af6b1d8e179?auto=format&fit=crop&q=80&w=800" alt="Art 3" class="w-full"/>
+                </div>
+                <div class="art-item">
+                    <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800" alt="Art 4" class="w-full"/>
+                </div>
+            </div>
+        </section>
+
+        <!-- Refil e Assinatura -->
+        <section class="py-24 glass rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-10">
+                <span class="material-symbols-outlined text-[10rem] text-secondary">rebase_edit</span>
+            </div>
+            <h2 class="font-headline text-4xl text-white mb-6">Assinatura Intimidade</h2>
+            <p class="text-on-surface-variant text-lg mb-12 max-w-2xl mx-auto">
+                Nunca deixe o ritual esfriar. Receba refis automáticos de seus óleos, velas e géis favoritos, além de novos desafios mensais.
+            </p>
+            <div class="flex flex-wrap justify-center gap-6">
+                <button onclick="simulatePurchase('Assinatura de Óleos')" class="bg-white/10 hover:bg-white/20 text-white py-4 px-10 rounded-full transition-all">Assinar Refil de Óleos</button>
+                <button onclick="simulatePurchase('Caixa Personalizada')" class="gold-gradient text-black font-bold py-4 px-10 rounded-full hover:scale-105 transition-all">Personalizar Minha Caixa</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function simulatePurchase(item) {
+            alert("✨ " + item + " adicionado ao seu Santuário! Em breve você será redirecionado para o checkout discreto.");
+        }
+
+    <!-- Footer Navegação -->
+    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 bg-black/80 backdrop-blur-xl border-t border-white/5 z-50">
+        <a href="index.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Home</span>
+        </a>
+        <a href="atmosfera.html" class="text-secondary flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined">graphic_eq</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Atmosfera</span>
+        </a>
+        <a href="jogo.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
+            <span class="material-symbols-outlined">casino</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Oráculo</span>
+        </a>
+    </nav>
+
+    <script>
+        let currentId = null;
+        const player = document.getElementById('main-audio');
+
+        function toggleAudio(id, url) {
+            const progressIds = { 'midnight': 'progress-midnight', 'jazz': 'progress-jazz', 'santuario': 'progress-santuario' };
+            const iconIds = { 'midnight': 'icon-midnight', 'jazz': 'icon-jazz', 'santuario': 'icon-santuario' };
+
+            // Se clicar no mesmo que já está tocando, pausa
+            if (currentId === id) {
+                if (player.paused) {
+                    player.play();
+                    document.getElementById(iconIds[id]).innerText = 'pause';
+                    document.getElementById(progressIds[id]).style.width = '100%';
+                } else {
+                    player.pause();
+                    document.getElementById(iconIds[id]).innerText = 'play_arrow';
+                    document.getElementById(progressIds[id]).style.width = '0%';
+                }
+                return;
+            }
+
+            // Se for um novo, reseta os outros e toca
+            Object.values(iconIds).forEach(i => document.getElementById(i).innerText = 'play_arrow');
+            Object.values(progressIds).forEach(p => document.getElementById(p).style.width = '0%');
+
+            player.src = url;
+            player.play().then(() => {
+                document.getElementById(iconIds[id]).innerText = 'pause';
+                document.getElementById(progressIds[id]).style.width = '100%';
+                currentId = id;
+            }).catch(e => {
+                alert("Por favor, clique novamente para autorizar o áudio no seu navegador.");
+            });
+        }
+    </script>
+
+</body>
+</html>

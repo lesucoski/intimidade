@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Intimidade - O Santuário da Autodescoberta</title>
+    
+    <!-- Scripts e Fontes -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#44152d",      // Vinho Profundo (Velvet)
+                        "secondary": "#C5A059",    // Ouro Champagne (Design System)
+                        "background": "#050505",   // Fundo Dark Luxury
+                        "surface": "#1c1c1e",
+                        "on-background": "#e0e0e0",
+                        "on-surface": "#e0e0e0",
+                        "on-surface-variant": "rgba(255, 255, 255, 0.6)",
+                        "outline-variant": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "xl": "1rem",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            background-color: #050505; 
+            color: #e0e0e0; 
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Noto Serif', serif; }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%);
+        }
+        .velvet-gradient { 
+            background: linear-gradient(135deg, #44152d 0%, #2a0d1c 100%); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .velvet-gradient-hover:hover { 
+            background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%);
+            color: #050505;
+        }
+
+        /* Animações de Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Ajuste de Imagens */
+        .img-overlay {
+            position: relative;
+        }
+        .img-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, #050505 100%);
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen pb-20 md:pb-0">
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/5 hidden md:block">
+    <div class="max-w-screen-2xl mx-auto flex justify-between items-center px-8 py-5">
+        <button class="text-secondary hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="text-3xl font-serif italic text-white tracking-tighter">
+            Intimidade
+        </div>
+        <a href="jogo.html" class="font-body text-[11px] uppercase tracking-[0.3em] text-secondary border border-secondary/30 px-5 py-2 rounded-full hover:bg-secondary hover:text-black transition-all">
+            Fazer o Quiz
+        </a>
+    </div>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section class="relative h-[90vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Hero" class="w-full h-full object-cover opacity-80" src="assets/hero.png"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-background"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center reveal active">
+            <span class="font-body text-secondary text-sm tracking-[0.4em] uppercase mb-8 block">O Santuário da Autodescoberta</span>
+            <h1 class="font-headline text-5xl md:text-8xl font-light text-white leading-[1.1] mb-10">
+                Redescubra a conexão <br/><span class="italic text-secondary">que existe entre vocês.</span>
+            </h1>
+            <p class="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto mb-12 leading-relaxed">
+                Nossa curadoria exclusiva de kits sensoriais transforma momentos cotidianos em experiências inesquecíveis de intimidade e cumplicidade.
+            </p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center">
+                <button onclick="document.getElementById('curadoria').scrollIntoView({behavior: 'smooth'})" class="gold-gradient text-black font-bold py-5 px-12 rounded-full hover:scale-105 transition-all shadow-[0_10px_30px_rgba(197,160,89,0.3)]">
+                    Explorar a Coleção
+                </button>
+                <a href="atmosfera.html" class="bg-white/5 backdrop-blur-sm border border-white/10 text-white py-5 px-12 rounded-full hover:bg-white/10 transition-all flex items-center justify-center">
+                    Atmosfera Sensorial
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curated Kits -->
+    <section class="py-32 px-6 max-w-screen-2xl mx-auto">
+        <div class="text-center mb-32 reveal">
+            <h2 class="font-headline text-4xl md:text-5xl text-white mb-6 italic">A Curadoria</h2>
+            <div class="w-20 h-px bg-secondary mx-auto"></div>
+        </div>
+
+        <!-- Kit 01 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16 items-center mb-48 reveal">
+            <div class="md:col-span-5 md:col-start-2 order-2 md:order-1">
+                <span class="text-secondary font-body text-xs tracking-widest uppercase mb-4 block">Experiência 01</span>
+                <h3 class="font-headline text-4xl text-white mb-6">Momento a Dois</h3>
+                <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+                    O essencial para reconectar. Uma seleção cuidadosa de óleos de massagem aromáticos e texturas suaves para despertar os sentidos em uma noite tranquila.
+                </p>
+                <button class="text-secondary border-b border-secondary/30 pb-2 hover:border-secondary transition-all">Ver Detalhes do Kit</button>
+            </div>
+            <div class="md:col-span-6 order-1 md:order-2">
+                <div class="relative group overflow-hidden rounded-2xl">
+                    <div class="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+                    <img alt="Momento a Dois" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDm_3oW5401PYhWZFH4Md4NM4pWYInnpTKtkmQMjsZ3CpDYEKUs4tE7Iagfq1mflqvwufRQfJ_i_q2s7u4u4dEYAMMsvk0lmMGyd1pq1i0RH3HpE5Tus3mQHJJsDU0QxJOnKNlcC2DLXyefdFJ6x7RejGbSPkxO3O38x5e1zMv8YimIazarAuCn-HyM1eFm2a-AeUXx2SQ7bFzNCooXOO0wzrbLqCVomQx-wJ0enZO_UUnIT_DpCgbp3vdGaScn0hZQcRQxYQ2t845Y"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kit 02 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16 items-center mb-48 reveal">
+            <div class="md:col-span-6 md:col-start-1">
+                <div class="relative group overflow-hidden rounded-2xl">
+                    <img alt="Exploração Sensorial" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCReBP5Xk7woRLN3aVqREKYj3JgflrVsX47JrP5JWRFCWiwD3BQuI2Q4tnClu1rOFTa2696IPaArpGf2v0wR-XjIe4ihkQFOqFhzYlLsN9X2yiTZlWc63K8nLSesG1VqPjF2pIWV-USkEwvzyLF1PahxlW5MJcnQ_JCUz0ui73hCisR-1CJgKxns_CtH5EX6kxL9irP40nX6t5sngiw8Oc0BZEStDNN-FcUmtesr08FVlFIJsuzABgcPCUSyFSXflw4mXy13ibzr_qI"/>
+                </div>
+            </div>
+            <div class="md:col-span-5">
+                <span class="text-secondary font-body text-xs tracking-widest uppercase mb-4 block">Experiência 02</span>
+                <h3 class="font-headline text-4xl text-white mb-6">Exploração Sensorial</h3>
+                <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+                    Vá além do óbvio. Ferramentas elegantes desenhadas para provocar novas sensações, vencendo a previsibilidade por descobertas mútuas e envolventes.
+                </p>
+                <button class="text-secondary border-b border-secondary/30 pb-2 hover:border-secondary transition-all">Explorar Ferramentas</button>
+            </div>
+        </div>
+
+        <!-- Kit 03 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16 items-center mb-32 reveal">
+            <div class="md:col-span-5 md:col-start-2 order-2 md:order-1">
+                <span class="text-secondary font-body text-xs tracking-widest uppercase mb-4 block">Experiência 03</span>
+                <h3 class="font-headline text-4xl text-white mb-6 italic">Êxtase Total</h3>
+                <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+                    Para celebrações íntimas e intensas. O ápice da nossa curadoria, reunindo os itens mais sofisticados para uma noite onde o tempo parece parar e apenas vocês importam.
+                </p>
+                <button class="gold-gradient text-black font-bold py-3 px-8 rounded-full hover:scale-105 transition-all">Garantir Experiência</button>
+            </div>
+            <div class="md:col-span-6 order-1 md:order-2">
+                <div class="relative group overflow-hidden rounded-2xl">
+                    <img alt="Êxtase Total" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-110" src="assets/hero.png"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section class="py-32 bg-[#0a0a0a] border-y border-white/5">
+        <div class="max-w-4xl mx-auto px-6 text-center reveal">
+            <span class="material-symbols-outlined text-secondary text-5xl mb-8">auto_awesome</span>
+            <h2 class="font-headline text-4xl md:text-6xl text-white mb-8">Qual é a sua <br/><span class="italic">linguagem do desejo?</span></h2>
+            <div class="bg-surface p-10 md:p-16 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full gold-gradient"></div>
+                
+                <div id="quiz-content">
+                    <p class="font-body text-secondary text-sm mb-4" id="quiz-step">Pergunta 1 de 3</p>
+                    <h3 class="font-headline text-2xl md:text-3xl text-white mb-12" id="quiz-question">O que torna uma noite inesquecível?</h3>
+                    
+                    <div class="space-y-4 text-left max-w-xl mx-auto">
+                        <label class="block p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary/50 cursor-pointer transition-all group">
+                            <input class="hidden quiz-option" name="quiz" type="radio" value="emocional" onclick="handleQuizClick()"/>
+                            <span class="font-body text-on-surface group-hover:text-white transition-colors text-lg" id="opt-1">Conversas profundas e um toque suave.</span>
+                        </label>
+                        <label class="block p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary/50 cursor-pointer transition-all group">
+                            <input class="hidden quiz-option" name="quiz" type="radio" value="fisico" onclick="handleQuizClick()"/>
+                            <span class="font-body text-on-surface group-hover:text-white transition-colors text-lg" id="opt-2">Experimentar algo novo e provocante.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mt-12 flex justify-center">
+                    <button id="quiz-next" onclick="nextQuizStep()" class="gold-gradient text-black font-bold py-4 px-12 rounded-full hover:scale-105 transition-all opacity-50 cursor-not-allowed" disabled>
+                        Próxima Pergunta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Magnet Section -->
+    <section class="py-32 px-6 max-w-screen-xl mx-auto reveal">
+        <div class="velvet-gradient rounded-[2.5rem] p-12 md:p-24 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <span class="inline-block py-1 px-4 border border-secondary text-secondary font-body text-[10px] uppercase tracking-widest rounded-full mb-8">Presente para vocês</span>
+                <h2 class="font-headline text-4xl md:text-5xl text-white mb-6 italic">Joguinho da Conexão</h2>
+                <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+                    Receba gratuitamente nosso guia digital com perguntas instigantes e pequenos desafios sensoriais.
+                </p>
+                <form id="lead-form" onsubmit="handleLead(event)" class="flex flex-col sm:flex-row gap-4">
+                    <input id="lead-email" required class="flex-grow bg-white/5 border-white/10 rounded-xl px-6 py-4 text-white focus:border-secondary focus:ring-0 outline-none" placeholder="Seu e-mail mais íntimo" type="email"/>
+                    <button type="submit" class="gold-gradient text-black font-bold px-10 py-4 rounded-xl hover:opacity-90 transition-opacity">Receber Agora</button>
+                </form>
+                <p id="lead-success" class="text-secondary mt-4 hidden italic">Enviado! Verifique sua caixa de entrada em instantes.</p>
+            </div>
+            <div class="md:w-1/2">
+                <img alt="Smartphone Mockup" class="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2L85Hq7nQxCo6741TyomhBD66vgR2emOVtpS6VqNkJ-6JneWJr1pTkJ70PzvzzT2HqKWB9CN47wMlxmuaf2Qcg0bY4HYvS9g62uagu_9VecsXPHRWMAQIiS1MPFd0qvFfvedUTpr1nrjaYNuHPeal02NiChECADz2QEWNk0_tutWmhHbzjd_RKMB7nya-LJxkQ_U8YBmprYlrlntYCU9VLr7vO7IHaJU1KW6jc3dexVJ1JqqV7eFNYRyWmhSo_QH41Ex8_lI9-42n"/>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Mobile Navigation -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 px-6 bg-black/80 backdrop-blur-xl border-t border-white/5 z-50 md:hidden">
+    <a href="index.html" class="text-secondary flex flex-col items-center gap-1">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[9px] uppercase tracking-widest font-body">Home</span>
+    </a>
+    <a href="atmosfera.html" class="text-white/40 flex flex-col items-center gap-1">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        <span class="text-[9px] uppercase tracking-widest font-body">Atmosfera</span>
+    </a>
+    <a href="jogo.html" class="text-white/40 flex flex-col items-center gap-1">
+        <span class="material-symbols-outlined">casino</span>
+        <span class="text-[9px] uppercase tracking-widest font-body">Oráculo</span>
+    </a>
+</nav>
+
+<!-- Footer -->
+<footer class="py-20 px-8 bg-black border-t border-white/5 text-center md:text-left">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div>
+            <span class="text-2xl font-serif italic text-white block mb-6">Intimidade</span>
+            <p class="text-on-surface-variant text-sm">© 2026 Intimidade. <br/>O Santuário da Autodescoberta.</p>
+        </div>
+        <div class="space-y-4">
+            <h4 class="text-white font-body text-xs uppercase tracking-widest mb-6">Explorar</h4>
+            <a href="#" class="block text-on-surface-variant hover:text-secondary transition-colors">Coleções</a>
+            <a href="#" class="block text-on-surface-variant hover:text-secondary transition-colors">Sobre Nós</a>
+        </div>
+        <div class="space-y-4">
+            <h4 class="text-white font-body text-xs uppercase tracking-widest mb-6">Atendimento</h4>
+            <a href="#" class="block text-on-surface-variant hover:text-secondary transition-colors">WhatsApp Especializado</a>
+            <a href="#" class="block text-on-surface-variant hover:text-secondary transition-colors">Envio Discreto</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Animação de Reveal no Scroll
+    function reveal() {
+        var reveals = document.querySelectorAll(".reveal");
+        for (var i = 0; i < reveals.length; i++) {
+            var windowHeight = window.innerHeight;
+            var elementTop = reveals[i].getBoundingClientRect().top;
+            var elementVisible = 150;
+            if (elementTop < windowHeight - elementVisible) {
+                reveals[i].classList.add("active");
+            }
+        }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal();
+
+    // Lógica do Mini-Quiz
+    let currentStep = 1;
+    const questions = [
+        { q: "O que torna uma noite inesquecível?", o1: "Conversas profundas e um toque suave.", o2: "Experimentar algo novo e provocante." },
+        { q: "Qual o ambiente ideal para vocês?", o1: "Um refúgio tranquilo e acolhedor.", o2: "Um cenário luxuoso e misterioso." },
+        { q: "O que buscam hoje?", o1: "Reconexão emocional.", o2: "Exploração sensorial intensa." }
+    ];
+
+    function handleQuizClick() {
+        const btn = document.getElementById('quiz-next');
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    function nextQuizStep() {
+        if (currentStep < 3) {
+            currentStep++;
+            document.getElementById('quiz-step').innerText = `Pergunta ${currentStep} de 3`;
+            document.getElementById('quiz-question').innerText = questions[currentStep-1].q;
+            document.getElementById('opt-1').innerText = questions[currentStep-1].o1;
+            document.getElementById('opt-2').innerText = questions[currentStep-1].o2;
+            
+            // Reset button
+            const btn = document.getElementById('quiz-next');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.checked = false);
+        } else {
+            window.location.href = "jogo.html";
+        }
+    }
+
+    // Lead Form
+    function handleLead(e) {
+        e.preventDefault();
+        document.getElementById('lead-form').classList.add('hidden');
+        document.getElementById('lead-success').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Noto+Serif:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Noto Serif", serif;
+  --font-body: "Manrope", sans-serif;
+  --font-label: "Manrope", sans-serif;
+
+  --color-surface-variant: #1c1c1e;
+  --color-on-surface: #e0e0e0;
+  --color-surface-container-low: #0f0f11;
+  --color-error-container: #441111;
+  --color-secondary: #C5A059;
+  --color-inverse-primary: #C5A059;
+  --color-inverse-surface: #f4f0ed;
+  --color-primary-fixed-dim: #C5A059;
+  --color-on-tertiary-fixed: #e0e0e0;
+  --color-outline-variant: rgba(255, 255, 255, 0.1);
+  --color-on-primary-fixed: #050505;
+  --color-on-primary-container: #ffffff;
+  --color-on-secondary-container: #C5A059;
+  --color-error: #ff4444;
+  --color-surface-container-high: #1c1c1e;
+  --color-surface-tint: #C5A059;
+  --color-on-background: #e0e0e0;
+  --color-background: #050505;
+  --color-tertiary-fixed: #252528;
+  --color-inverse-on-surface: #050505;
+  --color-surface-container: #0f0f11;
+  --color-on-primary-fixed-variant: #C5A059;
+  --color-tertiary: #1c1c1e;
+  --color-on-tertiary-fixed-variant: #8e9299;
+  --color-primary-fixed: #e0e0e0;
+  --color-surface: #050505;
+  --color-on-tertiary: #050505;
+  --color-on-error-container: #ffdad6;
+  --color-surface-dim: #0f0f11;
+  --color-on-tertiary-container: #e0e0e0;
+  --color-secondary-container: #1c1c1e;
+  --color-on-surface-variant: rgba(255, 255, 255, 0.6);
+  --color-primary-container: #1c1c1e;
+  --color-on-error: #ffffff;
+  --color-primary: #ffffff;
+  --color-on-secondary: #050505;
+  --color-on-primary: #050505;
+  --color-surface-bright: #0f0f11;
+  --color-surface-container-highest: #1c1c1e;
+  --color-tertiary-container: #252528;
+  --color-outline: rgba(255, 255, 255, 0.2);
+  --color-surface-container-lowest: #050505;
+  --color-on-secondary-fixed: #050505;
+  --color-on-secondary-fixed-variant: #C5A059;
+  --color-tertiary-fixed-dim: #1c1c1e;
+  --color-secondary-fixed: #e0e0e0;
+  --color-secondary-fixed-dim: #C5A059;
+
+  --radius-full: 9999px;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  body {
+    @apply font-body bg-background text-on-background antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline;
+  }
+}
+
+@layer utilities {
+  .gold-gradient {
+    background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%);
+  }
+  .velvet-gradient {
+    background: linear-gradient(135deg, #1c1c1e 0%, #0f0f11 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .velvet-gradient-hover:hover {
+    background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%);
+    color: #050505;
+  }
+  .tap-highlight-transparent {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .screen-border {
+    border: 6px solid #1C1C1E;
+    border-radius: 40px;
+  }
+}

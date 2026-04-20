@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Oráculo da Intimidade - O Jogo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#44152d",
+                        "secondary": "#C5A059",
+                        "background": "#050505",
+                        "surface": "#1c1c1e",
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            background-color: #050505; 
+            color: #e0e0e0; 
+            overflow-x: hidden;
+        }
+        .gold-gradient { background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Dado Animation */
+        .dice {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease-out;
+        }
+        .dice-rolling { animation: rolling 0.5s infinite linear; }
+        @keyframes rolling {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+
+    <div class="max-w-md w-full glass rounded-[2.5rem] p-8 md:p-12 text-center relative overflow-hidden shadow-2xl">
+        <div class="absolute top-0 left-0 w-full h-1 gold-gradient"></div>
+
+        <!-- Step 1: Nível -->
+        <div id="step-1" class="step active">
+            <span class="material-symbols-outlined text-secondary text-4xl mb-4">auto_awesome</span>
+            <h1 class="font-headline text-3xl text-white mb-4 italic">Escolha a Intensidade</h1>
+            <p class="text-on-surface-variant mb-8 text-sm">Como desejam que seja a conexão de vocês agora?</p>
+            
+            <div class="space-y-4">
+                <button onclick="nextStep(2, 'leve')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">1</div>
+                    <div>
+                        <span class="block font-bold text-white">Leve</span>
+                        <span class="text-xs text-on-surface-variant">Conexão emocional e toques suaves.</span>
+                    </div>
+                </button>
+                <button onclick="nextStep(2, 'apimentado')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">2</div>
+                    <div>
+                        <span class="block font-bold text-white">Apimentado</span>
+                        <span class="text-xs text-on-surface-variant">Provocação, vendas e mistério.</span>
+                    </div>
+                </button>
+                <button onclick="nextStep(2, 'hard')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">3</div>
+                    <div>
+                        <span class="block font-bold text-white">Exploração Total</span>
+                        <span class="text-xs text-on-surface-variant">Intensidade, brinquedos e ousadia.</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Inventário -->
+        <div id="step-2" class="step">
+            <h2 class="font-headline text-2xl text-white mb-6">O que vocês têm em mãos?</h2>
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
+                    <input type="checkbox" value="gelo" class="accent-secondary inventory-item"> <span>Gelo</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
+                    <input type="checkbox" value="lenco" class="accent-secondary inventory-item"> <span>Lenço</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
+                    <input type="checkbox" value="musica" class="accent-secondary inventory-item" checked> <span>Música</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
+                    <input type="checkbox" value="oleo" class="accent-secondary inventory-item"> <span>Óleo/Creme</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5 col-span-2">
+                    <input type="checkbox" value="kit" class="accent-secondary inventory-item"> <span class="font-bold text-secondary italic">Tenho um Kit Intimidade</span>
+                </label>
+            </div>
+            <button onclick="nextStep(3)" class="w-full gold-gradient text-black font-bold py-4 rounded-full shadow-lg">Começar o Oráculo</button>
+        </div>
+
+        <!-- Step 3: O Dado -->
+        <div id="step-3" class="step">
+            <div class="flex justify-center mb-12 mt-8">
+                <div id="dice-container" class="dice flex items-center justify-center bg-secondary/20 rounded-2xl border-2 border-secondary shadow-[0_0_50px_rgba(197,160,89,0.2)]">
+                    <span class="material-symbols-outlined text-secondary text-6xl">casino</span>
+                </div>
+            </div>
+            <h2 class="font-headline text-xl text-white mb-4">Gire para descobrir seu destino...</h2>
+            <button id="roll-button" onclick="rollDice()" class="w-full gold-gradient text-black font-bold py-4 rounded-full shadow-lg">GIRAR O DADO</button>
+        </div>
+
+        <!-- Step 4: Resultado -->
+        <div id="step-4" class="step">
+            <span id="result-icon" class="material-symbols-outlined text-secondary text-5xl mb-6">favorite</span>
+            <div id="result-content" class="min-h-[150px] flex items-center justify-center">
+                <h3 id="result-text" class="font-headline text-2xl text-white leading-relaxed italic"></h3>
+            </div>
+            
+            <div id="upsell-container" class="mt-8 p-4 bg-primary/20 rounded-2xl border border-primary/30 hidden">
+                <p class="text-xs text-on-surface-variant mb-2 italic">Dica: Essa experiência fica divina com nosso...</p>
+                <p class="font-bold text-secondary mb-3" id="kit-name">Kit Êxtase Total</p>
+                <button onclick="simulatePurchase()" class="text-xs border-b border-secondary/50 text-secondary hover:text-white transition-colors">Quero garantir o meu</button>
+            </div>
+
+            <button onclick="nextStep(3)" class="mt-8 text-on-surface-variant hover:text-white transition-colors text-sm underline underline-offset-4">Girar novamente</button>
+            <br/>
+            <button onclick="location.reload()" class="mt-4 text-xs text-on-surface-variant/50">Mudar intensidade</button>
+        </div>
+
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 bg-black/80 backdrop-blur-xl border-t border-white/5 z-50">
+        <a href="index.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Home</span>
+        </a>
+        <a href="atmosfera.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
+            <span class="material-symbols-outlined">graphic_eq</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Atmosfera</span>
+        </a>
+        <a href="jogo.html" class="text-secondary flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined">casino</span>
+            <span class="text-[9px] uppercase tracking-widest font-body">Oráculo</span>
+        </a>
+    </nav>
+
+    <script>
+        let gameState = {
+            level: 'leve',
+            inventory: []
+        };
+
+        const challenges = {
+            leve: [
+                { text: "Olhem-se nos olhos em silêncio por 1 minuto inteiro.", icon: "visibility" },
+                { text: "Dê um beijo de 30 segundos como se fosse o primeiro.", icon: "favorite" },
+                { text: "Sussurre algo que você adora no corpo do outro.", icon: "record_voice_over" },
+                { text: "Faça uma massagem rítmica nos ombros por 2 minutos.", icon: "back_hand", item: "oleo" }
+            ],
+            apimentado: [
+                { text: "Vende o parceiro com um lenço e use as pontas dos dedos para arrepiar sua nuca.", icon: "visibility_off", item: "lenco" },
+                { text: "Use um cubo de gelo para desenhar o caminho do desejo nos braços do outro.", icon: "ac_unit", item: "gelo" },
+                { text: "Escolha uma música e dance colado, sussurrando um segredo atrevido.", icon: "music_note", item: "musica" },
+                { text: "Espalhe o óleo lentamente e faça massagem com os antebraços.", icon: "spa", item: "oleo" }
+            ],
+            hard: [
+                { text: "Venda o parceiro. Use o brinquedo ou acessório do Kit para percorrer o corpo dele, sem pressa, focando onde ele menos espera.", icon: "visibility_off", item: "kit" },
+                { text: "Exploração Térmica: Use o gel ou algo gelado. Alterne entre o sopro quente e o toque frio em zonas de pulsação.", icon: "thermometer_gain", item: "gelo" },
+                { text: "Submissão Sensorial: Um parceiro não pode se mover por 5 minutos enquanto o outro explora cada centímetro de sua pele como quiser.", icon: "pan_tool" },
+                { text: "O Desafio do Ritmo: Use o acessório vibratório em uma intensidade baixa por 3 minutos, aumentando apenas quando o parceiro pedir com o olhar.", icon: "speed", item: "kit" },
+                { text: "Roleplay de Luxo: Sussurre uma fantasia que você nunca contou antes, enquanto mantém contato visual intenso.", icon: "theater_comedy" }
+            ]
+        };
+
+        function nextStep(step, val) {
+            if (val) gameState.level = val;
+            if (step === 3) {
+                gameState.inventory = Array.from(document.querySelectorAll('.inventory-item:checked')).map(el => el.value);
+            }
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + step).classList.add('active');
+        }
+
+        function rollDice() {
+            const dice = document.getElementById('dice-container');
+            const btn = document.getElementById('roll-button');
+            
+            dice.classList.add('dice-rolling');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
+            setTimeout(() => {
+                dice.classList.remove('dice-rolling');
+                showResult();
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }, 1500);
+        }
+
+        function showResult() {
+            const list = challenges[gameState.level];
+            
+            // Filtro inteligente: tenta achar um desafio que combine com o inventário
+            let filtered = list.filter(c => !c.item || gameState.inventory.includes(c.item) || gameState.inventory.includes('kit'));
+            
+            // Se não tiver nada compatível, pega qualquer um e sugere o kit
+            let result = filtered.length > 0 
+                ? filtered[Math.floor(Math.random() * filtered.length)]
+                : list[Math.floor(Math.random() * list.length)];
+
+            document.getElementById('result-text').innerText = result.text;
+            document.getElementById('result-icon').innerText = result.icon || 'star';
+            
+            const upsell = document.getElementById('upsell-container');
+            if (result.item && !gameState.inventory.includes(result.item) && !gameState.inventory.includes('kit')) {
+                upsell.classList.remove('hidden');
+                document.getElementById('kit-name').innerText = "Kit correspondente";
+            } else {
+                upsell.classList.add('hidden');
+            }
+
+            nextStep(4);
+        }
+
+        function simulatePurchase() {
+            const kit = document.getElementById('kit-name').innerText;
+            alert("✨ " + kit + " adicionado ao seu Santuário! Em breve você será redirecionado para o checkout discreto.");
+        }
+    </script>
+</body>
+</html>
