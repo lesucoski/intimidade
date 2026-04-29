@@ -25,7 +25,7 @@ h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:2rem;text-al
 .big-result{background:linear-gradient(135deg,#1a1a1a,#0d0d0d);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:1400px;margin:24px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px}
 .metric{text-align:center}
 .metric .label{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
-.metric .number{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold)}
+.metric .number{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold)}
 .metric .number.red{color:#f87171}.metric .number.green{color:#4ade80}
 .divider{height:1px;background:var(--border);margin:14px 0}
 .badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.7rem;font-weight:600;letter-spacing:1px}
@@ -67,6 +67,20 @@ td.neg{color:#f87171} td.pos{color:#4ade80}
   <!-- CUSTO DO PRODUTO — KIT BUILDER DINÂMICO -->
   <div class="card" style="grid-column: span 1">
     <h2>🛒 Construtor de Kit (Produtos)</h2>
+
+    <p class="kit-section-label">⚡ Kits Rápidos (Preencher Automático)</p>
+    <div style="display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;">
+      <button class="tab" onclick="loadKit('essencial')" style="font-size:0.65rem;">Noite Essencial</button>
+      <button class="tab" onclick="loadKit('explorador')" style="font-size:0.65rem;">Exploração a Dois</button>
+      <button class="tab" onclick="loadKit('premium')" style="font-size:0.65rem;">Êxtase Premium</button>
+    </div>
+
+    <p class="kit-section-label">📚 Catálogo Base</p>
+    <div class="row" style="margin-bottom:18px;">
+      <select id="db_select" onchange="if(this.value){addFromDb(this.value); this.value='';}" style="width:100%;">
+        <option value="">+ Selecionar produto do catálogo...</option>
+      </select>
+    </div>
 
     <p class="kit-section-label">📦 Produtos do Kit</p>
     <div id="kit-items">
@@ -116,7 +130,6 @@ td.neg{color:#f87171} td.pos{color:#4ade80}
       </select>
     </div>
     <div class="row"><label>Alíquota efetiva (%)</label><input type="number" id="aliquota" value="5.07" step="0.01" oninput="calc()"></div>
-    <div class="row"><label>Previsão fat. mensal (R$)</label><input type="number" id="fat_mensal" value="5000" oninput="calc()"></div>
     <div class="divider"></div>
     <div class="result-row"><span>Imposto estimado / mês</span><span class="val red" id="imp_mes">—</span></div>
     <div class="result-row"><span>Imposto / Kit (pro-rata)</span><span class="val red" id="imp_kit">—</span></div>
@@ -127,9 +140,9 @@ td.neg{color:#f87171} td.pos{color:#4ade80}
   <div class="card">
     <h2>💰 Preço de Venda e Margem</h2>
     <div class="row"><label>Preço de venda (R$)</label><input type="number" id="preco" value="249" oninput="calc()"></div>
-    <div class="row"><label>Custo fixo mensal (R$)</label><input type="number" id="fixo" value="800" oninput="calc()"></div>
-    <div class="row"><label>Unidades vendidas/mês</label><input type="number" id="unidades" value="20" oninput="calc()"></div>
-    <div class="row"><label>Marketing / mês (R$)</label><input type="number" id="mkt" value="400" oninput="calc()"></div>
+    <div class="row"><label>Custo fixo mensal (R$)</label><input type="number" id="fixo" value="0" oninput="calc()"></div>
+    <div class="row"><label>Unidades vendidas/mês</label><input type="number" id="unidades" value="1" oninput="calc()"></div>
+    <div class="row"><label>Marketing / mês (R$)</label><input type="number" id="mkt" value="0" oninput="calc()"></div>
     <div class="divider"></div>
     <div class="result-row"><span>Receita Bruta</span><span class="val" id="receita_bruta">—</span></div>
     <div class="result-row"><span>(-) Custo Variável Total</span><span class="val red" id="custo_var_total">—</span></div>
@@ -171,13 +184,13 @@ td.neg{color:#f87171} td.pos{color:#4ade80}
 </div>
 
 <!-- PAINEL PRINCIPAL -->
-<div class="big-result">
+<div class="big-result" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px; padding: 24px;">
+  <div class="metric"><div class="label">Preço Venda</div><div class="number" id="venda_big" style="font-size:1.6rem">—</div></div>
+  <div class="metric"><div class="label">Custo Kit</div><div class="number red" id="ck_big" style="font-size:1.6rem">—</div></div>
+  <div class="metric"><div class="label">Taxa Plataforma</div><div class="number red" id="tx_big" style="font-size:1.6rem">—</div></div>
+  <div class="metric"><div class="label">Imposto</div><div class="number red" id="im_big" style="font-size:1.6rem">—</div></div>
+  <div class="metric"><div class="label">Lucro Líquido</div><div class="number green" id="lk_big">—</div></div>
   <div class="metric"><div class="label">Margem Líquida</div><div class="number" id="mg_big">—</div></div>
-  <div class="metric"><div class="label">Lucro / Kit</div><div class="number" id="lk_big">—</div></div>
-  <div class="metric"><div class="label">Break-Even</div><div class="number" id="be_big">— kits</div></div>
-  <div class="metric"><div class="label">Payback</div><div class="number" id="pb_big">— meses</div></div>
-  <div class="metric"><div class="label">ROI Anual</div><div class="number green" id="roi_big">—</div></div>
-  <div class="metric"><div class="label">Viabilidade</div><div class="number" id="via_big">—</div></div>
 </div>
 
 <script>
@@ -185,22 +198,86 @@ let canal = 'ml';
 let itemCount = 0;
 
 const defaultItems = [
-  {nome:'Óleo de Massagem',dist:'Fornecedor A',custo:35},
-  {nome:'Vela Aromática',dist:'Fornecedor A',custo:28},
-  {nome:'Máscara Tapa-olhos',dist:'Fornecedor B',custo:20}
+  {nome:'Vela Delírio Tropical',dist:'Shop Libido',custo:35.91, link:'https://www.shoplibido.com.br/vela-de-massagem-beijavel-vibrante-delirio-tropical-40g-sofisticatto.html'},
+  {nome:'Gel Fogo no Parquinho',dist:'Shop Libido',custo:26.15, link:'https://www.shoplibido.com.br/fogo-no-parquinho-gel-feminino-esquenta-e-vibra-60ml-hot-flowers.html'}
 ];
 
-function addItem(nome='',dist='',custo=0) {
+const PREDEF_KITS = {
+  essencial: {
+    precoSugerido: 159,
+    items: [
+      {nome:'Vela Delírio Tropical',dist:'Shop Libido',custo:35.91, link:'https://www.shoplibido.com.br/vela-de-massagem-beijavel-vibrante-delirio-tropical-40g-sofisticatto.html'},
+      {nome:'Gel Fogo no Parquinho',dist:'Shop Libido',custo:26.15, link:'https://www.shoplibido.com.br/fogo-no-parquinho-gel-feminino-esquenta-e-vibra-60ml-hot-flowers.html'}
+    ]
+  },
+  explorador: {
+    precoSugerido: 299,
+    items: [
+      {nome:'Óleo Maçã do Amor INTT',dist:'Shop Libido',custo:35.00, link:'https://www.shoplibido.com.br/oleo-de-massagem-tantrica-maca-do-amor-130ml-intt.html'},
+      {nome:'Anel Duplo Vibratório',dist:'Shop Libido',custo:26.50, link:'https://www.shoplibido.com.br/anel-peniano-duplo-com-vibrador-e-estimulador-de-clitoris-general-import.html'},
+      {nome:'Body Splash Phero',dist:'Shop Libido',custo:19.29, link:'https://www.shoplibido.com.br/body-splash-phero-aroma-feminino-120ml-sexy-fantasy.html'}
+    ]
+  },
+  premium: {
+    precoSugerido: 499,
+    items: [
+      {nome:'Vibrador Casal App Control',dist:'Intimidade',custo:150.00, link:''},
+      {nome:'Jogo Desejos e Drinks',dist:'Shop Libido',custo:19.28, link:'https://www.shoplibido.com.br/desejos-e-drinks-jogo-sensual-para-casais-50-cartas-diversao-ao-cubo.html'},
+      {nome:'Gel Fogo no Parquinho',dist:'Shop Libido',custo:26.15, link:'https://www.shoplibido.com.br/fogo-no-parquinho-gel-feminino-esquenta-e-vibra-60ml-hot-flowers.html'}
+    ]
+  }
+};
+
+const DATABASE_PRODUTOS = {
+  gel_fogo: {nome:'Sérum Sensorial Fogo no Parquinho',dist:'Shop Libido',custo:26.15, link:'https://www.shoplibido.com.br/fogo-no-parquinho-gel-feminino-esquenta-e-vibra-60ml-hot-flowers.html'},
+  jogo_desejos: {nome:'Oráculo Desejos & Drinks',dist:'Shop Libido',custo:19.28, link:'https://www.shoplibido.com.br/desejos-e-drinks-jogo-sensual-para-casais-50-cartas-diversao-ao-cubo.html'},
+  anel_duplo: {nome:'Anel Vibratório Infinity',dist:'Shop Libido',custo:26.50, link:'https://www.shoplibido.com.br/anel-peniano-duplo-com-vibrador-e-estimulador-de-clitoris-general-import.html'},
+  body_splash: {nome:'Bruma Sedutora Phero Aroma',dist:'Shop Libido',custo:19.29, link:'https://www.shoplibido.com.br/body-splash-phero-aroma-feminino-120ml-sexy-fantasy.html'},
+  oleo_maca: {nome:'Néctar Tântrico Maçã do Amor',dist:'Shop Libido',custo:35.00, link:'https://www.shoplibido.com.br/oleo-de-massagem-tantrica-maca-do-amor-130ml-intt.html'},
+  vela_delirio: {nome:'Vela de Massagem Delírio',dist:'Shop Libido',custo:35.91, link:'https://www.shoplibido.com.br/vela-de-massagem-beijavel-vibrante-delirio-tropical-40g-sofisticatto.html'},
+  vibrador_app: {nome:'Vibrador Casal App Control',dist:'Intimidade (Genérico)',custo:150.00, link:''}
+};
+
+function initCatalog() {
+  const select = document.getElementById('db_select');
+  for (const [key, item] of Object.entries(DATABASE_PRODUTOS)) {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = `${item.nome} — R$ ${item.custo.toFixed(2).replace('.',',')}`;
+    select.appendChild(opt);
+  }
+}
+
+function addFromDb(key) {
+  const item = DATABASE_PRODUTOS[key];
+  if(item) addItem(item.nome, item.dist, item.custo, item.link);
+}
+
+function loadKit(kitKey) {
+    document.getElementById('kit-items').innerHTML = '';
+    const kit = PREDEF_KITS[kitKey];
+    if(kit) {
+        kit.items.forEach(i => addItem(i.nome, i.dist, i.custo, i.link));
+        document.getElementById('preco').value = kit.precoSugerido;
+        calc();
+    }
+}
+
+function addItem(nome='',dist='',custo=0, link='') {
   itemCount++;
   const id = 'item_'+itemCount;
   const el = document.createElement('div');
   el.className = 'kit-item';
   el.id = id;
+  
+  const linkHtml = link ? `<a href="${link}" target="_blank" title="Validar preço na Shop Libido" style="text-decoration:none; font-size:1.1rem; padding:0 6px; color:var(--gold); display:inline-flex; align-items:center;">🔗</a>` : `<span style="width:28px"></span>`;
+  
   el.innerHTML = `
-    <div class="kit-item-top">
-      <input type="text" placeholder="Nome do produto" value="${nome}" oninput="calc()" style="font-size:.82rem">
-      <input type="number" placeholder="R$ custo" value="${custo||''}" step="0.01" oninput="calc()" class="kit-cost">
-      <button class="btn-del" onclick="removeItem('${id}')" title="Remover">✕</button>
+    <div class="kit-item-top" style="display:flex; align-items:center; gap:6px;">
+      <input type="text" placeholder="Nome do produto" value="${nome}" oninput="calc()" style="font-size:.82rem; flex:1;">
+      ${linkHtml}
+      <input type="number" placeholder="R$ custo" value="${custo||''}" step="0.01" oninput="calc()" class="kit-cost" style="width:70px;">
+      <button class="btn-del" onclick="removeItem('${id}')" title="Remover" style="width:28px; text-align:center;">✕</button>
     </div>
     <div class="kit-item-bot">
       <span class="dist-label">Fornecedor:</span>
@@ -265,14 +342,17 @@ function calc() {
   set('total_taxas', fmt(totalTaxas));
 
   const aliquota = gv('aliquota');
-  const fatMensal = gv('fat_mensal');
-  const impMes = gv('regime') === 'mei' ? 75 : fatMensal * aliquota / 100;
-  const unidades = gv('unidades');
-  const impKit = impMes / Math.max(unidades, 1);
+  const unidades = Math.max(gv('unidades'), 1);
+  const receita = preco * unidades;
+  
+  // Imposto calculado sobre a RECEITA REAL simulada
+  const impMes = gv('regime') === 'mei' ? 75 : (receita * aliquota / 100);
+  const impKit = gv('regime') === 'mei' ? (75 / unidades) : (preco * aliquota / 100);
+  
   set('imp_mes', fmt(impMes));
   set('imp_kit', fmt(impKit));
 
-  const receita = preco * unidades;
+
   const custoVarTotal = custoKit * unidades;
   const taxaTotalM = totalTaxas * unidades;
   const fixoTotal = gv('fixo') + gv('mkt');
@@ -302,13 +382,12 @@ function calc() {
   set('roi', pct(roiAnual));
 
   // Big panel
+  set('venda_big', fmt(preco));
+  set('ck_big', '- ' + fmt(custoKit));
+  set('tx_big', '- ' + fmt(totalTaxas));
+  set('im_big', '- ' + fmt(impKit));
   set('mg_big', pct(margem));
   set('lk_big', fmt(lucroKit));
-  set('be_big', breakEven.toFixed(0)+' kits');
-  set('pb_big', (payback >= 100 ? '> 100' : payback.toFixed(1))+' m.');
-  set('roi_big', pct(roiAnual));
-  const via = margem > 25 ? '✅ Viável' : margem > 10 ? '⚠️ Marginal' : '❌ Inviável';
-  set('via_big', via);
 
   // Cenários
   const cenarios = [{n:'Pessimista',u:Math.round(unidades*.5)},{n:'Realista',u:unidades},{n:'Otimista',u:Math.round(unidades*1.5)},{n:'Agressivo',u:Math.round(unidades*2.5)}];
@@ -328,7 +407,8 @@ function calc() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  defaultItems.forEach(i => addItem(i.nome, i.dist, i.custo));
+  initCatalog();
+  defaultItems.forEach(i => addItem(i.nome, i.dist, i.custo, i.link));
 });
 </script>
 </body>

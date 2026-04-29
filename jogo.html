@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Oráculo da Intimidade - O Jogo</title>
+    <title>Oráculo da Intimidade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-
+    
     <script>
         tailwind.config = {
             theme: {
@@ -16,11 +16,11 @@
                         "primary": "#44152d",
                         "secondary": "#C5A059",
                         "background": "#050505",
-                        "surface": "#1c1c1e",
+                        "surface": "#1c1c1e"
                     },
                     fontFamily: {
                         "headline": ["Noto Serif", "serif"],
-                        "body": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"]
                     }
                 }
             }
@@ -28,221 +28,233 @@
     </script>
 
     <style>
-        body { 
-            font-family: 'Manrope', sans-serif; 
-            background-color: #050505; 
-            color: #e0e0e0; 
-            overflow-x: hidden;
-        }
+        body { font-family: 'Manrope', sans-serif; background-color: #050505; color: #e0e0e0; overflow-x: hidden; }
         .gold-gradient { background: linear-gradient(135deg, #C5A059 0%, #8e703a 100%); }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gold-text { background: linear-gradient(135deg, #C5A059 0%, #e8d08b 50%, #8e703a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.02); backdrop-filter: blur(20px); border: 1px solid rgba(197, 160, 89, 0.15); }
         
-        /* Dado Animation */
-        .dice {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 1s ease-out;
+        /* Efeito de Carta 3D */
+        .scene {
+            width: 300px;
+            height: 420px;
+            perspective: 1000px;
+            margin: 0 auto;
+            cursor: pointer;
         }
-        .dice-rolling { animation: rolling 0.5s infinite linear; }
-        @keyframes rolling {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
+        .card-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        .card-3d.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(197, 160, 89, 0.3);
+            overflow: hidden;
+        }
+        .card-front {
+            background: linear-gradient(145deg, #111 0%, #050505 100%);
+        }
+        .card-front::after {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 14px;
+        }
+        .card-back {
+            background: linear-gradient(145deg, #2a0b1b 0%, #11050a 100%);
+            transform: rotateY(180deg);
+            padding: 30px;
+            text-align: center;
+        }
+        .card-back::after {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px dashed rgba(197, 160, 89, 0.2);
+            border-radius: 10px;
+            pointer-events: none;
         }
 
-        .step { display: none; }
-        .step.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animações e Modais */
+        #cta-modal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #cta-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(197, 160, 89, 0.1) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-6">
+<body class="flex flex-col min-h-screen relative">
 
-    <div class="max-w-md w-full glass rounded-[2.5rem] p-8 md:p-12 text-center relative overflow-hidden shadow-2xl">
-        <div class="absolute top-0 left-0 w-full h-1 gold-gradient"></div>
+    <div class="ambient-glow"></div>
 
-        <!-- Step 1: Nível -->
-        <div id="step-1" class="step active">
-            <span class="material-symbols-outlined text-secondary text-4xl mb-4">auto_awesome</span>
-            <h1 class="font-headline text-3xl text-white mb-4 italic">Escolha a Intensidade</h1>
-            <p class="text-on-surface-variant mb-8 text-sm">Como desejam que seja a conexão de vocês agora?</p>
-            
-            <div class="space-y-4">
-                <button onclick="nextStep(2, 'leve')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">1</div>
-                    <div>
-                        <span class="block font-bold text-white">Leve</span>
-                        <span class="text-xs text-on-surface-variant">Conexão emocional e toques suaves.</span>
-                    </div>
-                </button>
-                <button onclick="nextStep(2, 'apimentado')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">2</div>
-                    <div>
-                        <span class="block font-bold text-white">Apimentado</span>
-                        <span class="text-xs text-on-surface-variant">Provocação, vendas e mistério.</span>
-                    </div>
-                </button>
-                <button onclick="nextStep(2, 'hard')" class="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary transition-all text-left flex items-center gap-4 group">
-                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-black">3</div>
-                    <div>
-                        <span class="block font-bold text-white">Exploração Total</span>
-                        <span class="text-xs text-on-surface-variant">Intensidade, brinquedos e ousadia.</span>
-                    </div>
-                </button>
-            </div>
-        </div>
-
-        <!-- Step 2: Inventário -->
-        <div id="step-2" class="step">
-            <h2 class="font-headline text-2xl text-white mb-6">O que vocês têm em mãos?</h2>
-            <div class="grid grid-cols-2 gap-3 mb-8">
-                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
-                    <input type="checkbox" value="gelo" class="accent-secondary inventory-item"> <span>Gelo</span>
-                </label>
-                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
-                    <input type="checkbox" value="lenco" class="accent-secondary inventory-item"> <span>Lenço</span>
-                </label>
-                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
-                    <input type="checkbox" value="musica" class="accent-secondary inventory-item" checked> <span>Música</span>
-                </label>
-                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5">
-                    <input type="checkbox" value="oleo" class="accent-secondary inventory-item"> <span>Óleo/Creme</span>
-                </label>
-                <label class="flex items-center gap-2 p-3 glass rounded-xl cursor-pointer hover:bg-white/5 col-span-2">
-                    <input type="checkbox" value="kit" class="accent-secondary inventory-item"> <span class="font-bold text-secondary italic">Tenho um Kit Intimidade</span>
-                </label>
-            </div>
-            <button onclick="nextStep(3)" class="w-full gold-gradient text-black font-bold py-4 rounded-full shadow-lg">Começar o Oráculo</button>
-        </div>
-
-        <!-- Step 3: O Dado -->
-        <div id="step-3" class="step">
-            <div class="flex justify-center mb-12 mt-8">
-                <div id="dice-container" class="dice flex items-center justify-center bg-secondary/20 rounded-2xl border-2 border-secondary shadow-[0_0_50px_rgba(197,160,89,0.2)]">
-                    <span class="material-symbols-outlined text-secondary text-6xl">casino</span>
-                </div>
-            </div>
-            <h2 class="font-headline text-xl text-white mb-4">Gire para descobrir seu destino...</h2>
-            <button id="roll-button" onclick="rollDice()" class="w-full gold-gradient text-black font-bold py-4 rounded-full shadow-lg">GIRAR O DADO</button>
-        </div>
-
-        <!-- Step 4: Resultado -->
-        <div id="step-4" class="step">
-            <span id="result-icon" class="material-symbols-outlined text-secondary text-5xl mb-6">favorite</span>
-            <div id="result-content" class="min-h-[150px] flex items-center justify-center">
-                <h3 id="result-text" class="font-headline text-2xl text-white leading-relaxed italic"></h3>
-            </div>
-            
-            <div id="upsell-container" class="mt-8 p-4 bg-primary/20 rounded-2xl border border-primary/30 hidden">
-                <p class="text-xs text-on-surface-variant mb-2 italic">Dica: Essa experiência fica divina com nosso...</p>
-                <p class="font-bold text-secondary mb-3" id="kit-name">Kit Êxtase Total</p>
-                <button onclick="simulatePurchase()" class="text-xs border-b border-secondary/50 text-secondary hover:text-white transition-colors">Quero garantir o meu</button>
-            </div>
-
-            <button onclick="nextStep(3)" class="mt-8 text-on-surface-variant hover:text-white transition-colors text-sm underline underline-offset-4">Girar novamente</button>
-            <br/>
-            <button onclick="location.reload()" class="mt-4 text-xs text-on-surface-variant/50">Mudar intensidade</button>
-        </div>
-
-    </div>
-
-    <!-- Mobile Navigation -->
-    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 bg-black/80 backdrop-blur-xl border-t border-white/5 z-50">
-        <a href="index.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
-            <span class="material-symbols-outlined">home</span>
-            <span class="text-[9px] uppercase tracking-widest font-body">Home</span>
-        </a>
-        <a href="atmosfera.html" class="text-white/40 flex flex-col items-center gap-1 hover:text-white transition-colors">
-            <span class="material-symbols-outlined">graphic_eq</span>
-            <span class="text-[9px] uppercase tracking-widest font-body">Atmosfera</span>
-        </a>
-        <a href="jogo.html" class="text-secondary flex flex-col items-center gap-1">
-            <span class="material-symbols-outlined">casino</span>
-            <span class="text-[9px] uppercase tracking-widest font-body">Oráculo</span>
-        </a>
+    <!-- Navegação -->
+    <nav class="absolute top-0 w-full z-50 p-6 flex justify-between items-center">
+        <a href="index.html" class="font-headline text-xl text-white italic tracking-wider">Intimidade</a>
+        <a href="loja.html" class="text-xs tracking-widest text-secondary hover:text-white transition-colors uppercase">A Boutique</a>
     </nav>
 
+    <!-- Header -->
+    <header class="pt-32 pb-12 text-center px-4 z-10 relative">
+        <span class="material-symbols-outlined text-secondary text-3xl mb-4">auto_awesome</span>
+        <h1 class="font-headline text-4xl md:text-5xl text-white italic mb-4">Oráculo da Conexão</h1>
+        <p class="text-on-surface-variant max-w-lg mx-auto text-sm md:text-base text-gray-400">
+            Deixe o destino guiar a sua noite. Toque no deck para revelar uma pergunta ou desafio que aprofundará a intimidade de vocês.
+        </p>
+    </header>
+
+    <!-- Área do Jogo -->
+    <main class="flex-grow flex flex-col items-center justify-center px-4 pb-20 z-10">
+        
+        <div class="scene" id="card-scene" onclick="drawCard()">
+            <div class="card-3d" id="card">
+                
+                <!-- Costas da Carta (O que aparece virado pra cima antes de clicar) -->
+                <div class="card-face card-front flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary opacity-50 text-5xl mb-4">diamond</span>
+                    <div class="w-16 h-16 border border-secondary/30 rounded-full flex items-center justify-center mb-2">
+                        <span class="font-headline text-secondary text-2xl italic">I</span>
+                    </div>
+                    <p class="text-[10px] text-secondary uppercase tracking-widest mt-4 opacity-50">Toque para Revelar</p>
+                </div>
+                
+                <!-- Frente da Carta (A mensagem revelada) -->
+                <div class="card-face card-back flex flex-col justify-center items-center">
+                    <span id="card-icon" class="material-symbols-outlined text-secondary text-3xl mb-4">favorite</span>
+                    <span id="card-type" class="text-[10px] text-secondary uppercase tracking-widest mb-6 block w-full border-b border-white/10 pb-2">Pergunta</span>
+                    <p id="card-text" class="font-headline text-xl text-white italic leading-relaxed">
+                        Qual foi a primeira coisa que você pensou quando me viu pela primeira vez?
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        
+        <p class="text-center text-xs text-gray-500 mt-8 tracking-widest uppercase">Cartas restantes: <span id="cards-left" class="text-secondary">3</span></p>
+
+    </main>
+
+    <!-- Modal de CTA (Geração de Lead / Upsell) -->
+    <div id="cta-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4">
+        <div class="glass max-w-md w-full p-8 rounded-3xl text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 gold-gradient"></div>
+            
+            <img src="assets/oraculo_deck.png" alt="Oráculo Desejos e Drinks" class="w-32 h-32 object-cover rounded-xl mx-auto mb-6 shadow-2xl border border-white/10" onerror="this.src='https://via.placeholder.com/150/111/C5A059?text=Deck';">
+            
+            <h2 class="font-headline text-3xl text-white italic mb-2">O clima esquentou?</h2>
+            <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                Você esgotou suas cartas grátis. Para continuar essa jornada de descobertas e transformar sua noite, conheça o nosso <strong class="text-white">Oráculo Desejos & Drinks</strong> com 50 cartas inéditas.
+            </p>
+            
+            <a href="loja.html" class="block w-full gold-gradient text-black font-bold py-4 rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] mb-4">
+                Desbloquear Deck Completo
+            </a>
+            
+            <button onclick="resetGame()" class="text-xs text-gray-500 hover:text-white underline underline-offset-4">
+                Quero jogar novamente
+            </button>
+        </div>
+    </div>
+
     <script>
-        let gameState = {
-            level: 'leve',
-            inventory: []
-        };
+        const DECK = [
+            { type: "Reflexão", icon: "psychology", text: "Qual foi o momento em que você percebeu que me desejava de verdade?" },
+            { type: "Provocação", icon: "local_fire_department", text: "Se pudéssemos realizar uma fantasia hoje sem consequências, qual seria?" },
+            { type: "Desafio Leve", icon: "touch_app", text: "Vende os meus olhos e me toque com o objeto mais macio que encontrar no quarto." },
+            { type: "Conexão", icon: "favorite", text: "Me conte um detalhe sobre o meu corpo que te deixa completamente louco(a)." },
+            { type: "Cenário", icon: "vpn_key", text: "Descreva como seria a nossa 'noite perfeita' num quarto de hotel luxuoso." },
+            { type: "Confissão", icon: "visibility", text: "Qual roupa minha você tem vontade de rasgar (ou que eu tire bem devagar)?" },
+            { type: "Ação", icon: "nightlife", text: "Prepare um drink ou sirva uma taça de vinho para mim, usando apenas uma peça de roupa." }
+        ];
 
-        const challenges = {
-            leve: [
-                { text: "Olhem-se nos olhos em silêncio por 1 minuto inteiro.", icon: "visibility" },
-                { text: "Dê um beijo de 30 segundos como se fosse o primeiro.", icon: "favorite" },
-                { text: "Sussurre algo que você adora no corpo do outro.", icon: "record_voice_over" },
-                { text: "Faça uma massagem rítmica nos ombros por 2 minutos.", icon: "back_hand", item: "oleo" }
-            ],
-            apimentado: [
-                { text: "Vende o parceiro com um lenço e use as pontas dos dedos para arrepiar sua nuca.", icon: "visibility_off", item: "lenco" },
-                { text: "Use um cubo de gelo para desenhar o caminho do desejo nos braços do outro.", icon: "ac_unit", item: "gelo" },
-                { text: "Escolha uma música e dance colado, sussurrando um segredo atrevido.", icon: "music_note", item: "musica" },
-                { text: "Espalhe o óleo lentamente e faça massagem com os antebraços.", icon: "spa", item: "oleo" }
-            ],
-            hard: [
-                { text: "Venda o parceiro. Use o brinquedo ou acessório do Kit para percorrer o corpo dele, sem pressa, focando onde ele menos espera.", icon: "visibility_off", item: "kit" },
-                { text: "Exploração Térmica: Use o gel ou algo gelado. Alterne entre o sopro quente e o toque frio em zonas de pulsação.", icon: "thermometer_gain", item: "gelo" },
-                { text: "Submissão Sensorial: Um parceiro não pode se mover por 5 minutos enquanto o outro explora cada centímetro de sua pele como quiser.", icon: "pan_tool" },
-                { text: "O Desafio do Ritmo: Use o acessório vibratório em uma intensidade baixa por 3 minutos, aumentando apenas quando o parceiro pedir com o olhar.", icon: "speed", item: "kit" },
-                { text: "Roleplay de Luxo: Sussurre uma fantasia que você nunca contou antes, enquanto mantém contato visual intenso.", icon: "theater_comedy" }
-            ]
-        };
+        let availableCards = [...DECK];
+        let drawsLeft = 3;
+        let isFlipping = false;
+        let currentSide = 'front'; // front = costas da carta pra cima (logo intimidade). back = mensagem visivel.
 
-        function nextStep(step, val) {
-            if (val) gameState.level = val;
-            if (step === 3) {
-                gameState.inventory = Array.from(document.querySelectorAll('.inventory-item:checked')).map(el => el.value);
-            }
-            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            document.getElementById('step-' + step).classList.add('active');
-        }
-
-        function rollDice() {
-            const dice = document.getElementById('dice-container');
-            const btn = document.getElementById('roll-button');
+        function drawCard() {
+            if (isFlipping) return;
             
-            dice.classList.add('dice-rolling');
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-
-            setTimeout(() => {
-                dice.classList.remove('dice-rolling');
-                showResult();
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            }, 1500);
-        }
-
-        function showResult() {
-            const list = challenges[gameState.level];
+            const cardEl = document.getElementById('card');
             
-            // Filtro inteligente: tenta achar um desafio que combine com o inventário
-            let filtered = list.filter(c => !c.item || gameState.inventory.includes(c.item) || gameState.inventory.includes('kit'));
-            
-            // Se não tiver nada compatível, pega qualquer um e sugere o kit
-            let result = filtered.length > 0 
-                ? filtered[Math.floor(Math.random() * filtered.length)]
-                : list[Math.floor(Math.random() * list.length)];
+            if (currentSide === 'front') {
+                // Se a carta está "escondida", vamos virar e revelar
+                if (drawsLeft <= 0) {
+                    showCTA();
+                    return;
+                }
 
-            document.getElementById('result-text').innerText = result.text;
-            document.getElementById('result-icon').innerText = result.icon || 'star';
-            
-            const upsell = document.getElementById('upsell-container');
-            if (result.item && !gameState.inventory.includes(result.item) && !gameState.inventory.includes('kit')) {
-                upsell.classList.remove('hidden');
-                document.getElementById('kit-name').innerText = "Kit correspondente";
+                isFlipping = true;
+                
+                // Escolhe uma carta aleatória
+                const randomIndex = Math.floor(Math.random() * availableCards.length);
+                const selectedCard = availableCards.splice(randomIndex, 1)[0];
+                
+                // Se o deck acabar, reseta
+                if (availableCards.length === 0) availableCards = [...DECK];
+
+                // Atualiza o conteúdo da frente da carta
+                document.getElementById('card-type').innerText = selectedCard.type;
+                document.getElementById('card-icon').innerText = selectedCard.icon;
+                document.getElementById('card-text').innerText = selectedCard.text;
+
+                // Anima
+                cardEl.classList.add('is-flipped');
+                currentSide = 'back';
+                drawsLeft--;
+                document.getElementById('cards-left').innerText = drawsLeft;
+                
+                setTimeout(() => { isFlipping = false; }, 800);
+
             } else {
-                upsell.classList.add('hidden');
+                // Se a carta já está revelada, vira de volta para "puxar outra"
+                isFlipping = true;
+                cardEl.classList.remove('is-flipped');
+                currentSide = 'front';
+                setTimeout(() => { isFlipping = false; }, 800);
             }
-
-            nextStep(4);
         }
 
-        function simulatePurchase() {
-            const kit = document.getElementById('kit-name').innerText;
-            alert("✨ " + kit + " adicionado ao seu Santuário! Em breve você será redirecionado para o checkout discreto.");
+        function showCTA() {
+            document.getElementById('cta-modal').classList.add('active');
+        }
+
+        function resetGame() {
+            drawsLeft = 3;
+            document.getElementById('cards-left').innerText = drawsLeft;
+            document.getElementById('cta-modal').classList.remove('active');
+            
+            const cardEl = document.getElementById('card');
+            cardEl.classList.remove('is-flipped');
+            currentSide = 'front';
         }
     </script>
 </body>

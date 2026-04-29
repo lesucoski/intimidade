@@ -116,6 +116,23 @@
                         <p class="text-on-surface-variant text-sm" id="result-desc"></p>
                     </div>
 
+                    <!-- Unboxing Virtual (Caixa) -->
+                    <div class="mb-12">
+                        <div class="relative w-full max-w-2xl mx-auto h-48 md:h-64 rounded-3xl border border-white/10 bg-[#0a0a0a] shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col items-center justify-center">
+                            <!-- Efeito de veludo/sombra interno -->
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-50"></div>
+                            
+                            <!-- Imagens dos itens selecionados irão aqui -->
+                            <div id="virtual-box-items" class="relative z-10 flex gap-4 items-center justify-center p-6 h-full w-full overflow-x-auto transition-all duration-500">
+                                <p id="virtual-box-empty" class="text-on-surface-variant text-sm italic opacity-50">Sua caixa está vazia. Selecione os itens abaixo.</p>
+                            </div>
+                            
+                            <!-- Borda dourada (tampa aberta) -->
+                            <div class="absolute bottom-0 left-0 w-full h-1 gold-gradient opacity-50"></div>
+                        </div>
+                        <p class="text-center text-[10px] text-secondary uppercase tracking-widest mt-4">Sua Experiência Intimidade</p>
+                    </div>
+
                     <!-- Itens sugeridos (checkboxes livres) -->
                     <div id="suggested-items" class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-4xl mx-auto mb-10"></div>
 
@@ -292,15 +309,106 @@
                 categoria: 'brinquedo',
                 icon: 'bolt',
                 img: 'assets/hero.png'
+            },
+            // NOVOS ITENS (BASEADOS NA CURADORIA SHOP LIBIDO)
+            {
+                id: 'gel_fogo_parquinho',
+                name: 'Sérum Sensorial Fogo no Parquinho',
+                desc: 'Ondas de calor e vibrações magnéticas que despertam a mais alta sensibilidade íntima.',
+                custo: 26.15,
+                preco: 89,
+                categoria: 'massagem',
+                icon: 'local_fire_department',
+                img: 'assets/serum_fogo.png'
+            },
+            {
+                id: 'jogo_desejos_drinks',
+                name: 'Oráculo Desejos & Drinks',
+                desc: 'Um convite ao inesperado. 50 cartas para quebrar o gelo e aprofundar a cumplicidade da noite.',
+                custo: 19.28,
+                preco: 95,
+                categoria: 'surpresa',
+                icon: 'style',
+                img: 'assets/oraculo_deck.png'
+            },
+            {
+                id: 'anel_duplo_vibratorio',
+                name: 'Anel Vibratório Infinity',
+                desc: 'Design elegante de duplo estímulo. Prolongue a performance com vibrações precisas para ambos.',
+                custo: 26.50,
+                preco: 129,
+                categoria: 'brinquedo',
+                icon: 'trip_origin',
+                img: 'assets/anel_infinity.png'
+            },
+            {
+                id: 'body_splash_phero',
+                name: 'Bruma Sedutora Phero Aroma',
+                desc: 'Uma aura inesquecível. Notas sofisticadas de baunilha e fava tonka para envolver a pele.',
+                custo: 19.29,
+                preco: 79,
+                categoria: 'surpresa',
+                icon: 'air_freshener',
+                img: 'assets/bruma_phero.png'
+            },
+            {
+                id: 'oleo_maca_amor',
+                name: 'Néctar Tântrico Maçã do Amor',
+                desc: 'Aroma doce e misterioso com deslize infinito. O toque sublime que transcende a rotina.',
+                custo: 35.00,
+                preco: 149,
+                categoria: 'massagem',
+                icon: 'spa',
+                img: 'assets/nectar_maca.png'
+            },
+            {
+                id: 'vela_delirio',
+                name: 'Vela de Massagem Delírio',
+                desc: 'Derrete em um óleo morno beijável. Enriquecida com Jambu para criar vibrações naturais.',
+                custo: 35.91,
+                preco: 98,
+                categoria: 'massagem',
+                icon: 'mode_fan',
+                img: 'assets/vela_delirio.png'
+            },
+            {
+                id: 'vibrador_casal_app',
+                name: 'Vibrador Casal App',
+                desc: 'Luxo com controle via smartphone.',
+                custo: 150.00,
+                preco: 399,
+                categoria: 'brinquedo',
+                icon: 'phone_iphone',
+                img: ''
+            },
+            {
+                id: 'pena_deluxe',
+                name: 'Pena de Avestruz Deluxe',
+                desc: 'Toque leve para privação sensorial.',
+                custo: 25.00,
+                preco: 79,
+                categoria: 'restricao',
+                icon: 'air',
+                img: ''
+            },
+            {
+                id: 'mascara_veludo',
+                name: 'Máscara de Veludo Noir',
+                desc: 'Conforto e privação total.',
+                custo: 28.00,
+                preco: 75,
+                categoria: 'restricao',
+                icon: 'masks',
+                img: ''
             }
         ];
 
         // Recomendações por vibe e budget
         const RECOMMENDATIONS = {
-            massagem:   ['baba_lub', 'oleo_tantrik', 'venda_seda'],
-            restricao:  ['amarras_submission', 'algemas_luxo', 'venda_seda'],
-            brinquedo:  ['vibrador_gspot', 'egg_magical', 'oleo_tantrik'],
-            surpresa:   ['baba_lub', 'venda_seda', 'chicote_couro', 'egg_magical']
+            massagem:   ['oleo_maca_amor', 'gel_fogo_parquinho', 'vela_delirio', 'baba_lub', 'oleo_tantrik'],
+            restricao:  ['venda_seda', 'algemas_luxo', 'pena_deluxe', 'mascara_veludo', 'amarras_submission', 'chicote_couro'],
+            brinquedo:  ['vibrador_casal_app', 'anel_duplo_vibratorio', 'vibrador_gspot', 'egg_magical'],
+            surpresa:   ['jogo_desejos_drinks', 'body_splash_phero', 'vela_delirio', 'egg_magical', 'venda_seda']
         };
 
         let cart = [];
@@ -370,6 +478,7 @@
                 container.appendChild(div);
             });
             updateKitTotal();
+            updateVirtualBox();
         }
 
         function toggleKitItem(id, preco, el) {
@@ -380,6 +489,35 @@
                 selectedKitItems.push(id);
             }
             updateKitTotal();
+            updateVirtualBox();
+        }
+
+        function updateVirtualBox() {
+            const box = document.getElementById('virtual-box-items');
+            box.innerHTML = '';
+            
+            if (selectedKitItems.length === 0) {
+                box.innerHTML = '<p id="virtual-box-empty" class="text-on-surface-variant text-sm italic opacity-50 transition-all duration-500">Sua caixa está vazia. Selecione itens abaixo.</p>';
+                return;
+            }
+            
+            selectedKitItems.forEach((id, index) => {
+                const p = CATALOG.find(c => c.id === id);
+                if (p) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-xl overflow-hidden shadow-2xl transition-all duration-500 hover:scale-110 flex items-center justify-center bg-surface border border-white/10';
+                    // Adiciona um pequeno delay de animação baseado no index
+                    imgContainer.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+                    imgContainer.style.opacity = '0';
+                    
+                    if (p.img) {
+                        imgContainer.innerHTML = `<img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover"/>`;
+                    } else {
+                        imgContainer.innerHTML = `<span class="material-symbols-outlined text-secondary/30 text-4xl">${p.icon}</span>`;
+                    }
+                    box.appendChild(imgContainer);
+                }
+            });
         }
 
         function updateKitTotal() {
@@ -478,10 +616,39 @@
 
         function finalizePurchase() {
             if (cart.length === 0) return alert('Seu carrinho está vazio!');
-            alert('✨ Pedido confirmado com discrição total! Você receberá um e-mail em instantes.');
-            cart = [];
-            updateCartUI();
-            toggleCart();
+            
+            let total = 0;
+            let itemsText = '';
+            
+            // Conta os itens e soma
+            cart.forEach(item => {
+                total += item.price;
+                itemsText += `- ${item.name}\n`;
+            });
+            
+            // Aplica desconto se houver 3 ou mais itens
+            const discount = cart.length >= 3;
+            if (discount) total = total * 0.85;
+            
+            const totalFormatado = `R$ ${total.toFixed(2)}`;
+            const obsDesconto = discount ? '\n*(Desconto de Kit aplicado!)*' : '';
+            
+            // Monta a mensagem
+            const mensagem = `Olá, Intimidade! Gostaria de reservar o seguinte pedido discreto:\n\n${itemsText}\n*Total:* ${totalFormatado}${obsDesconto}\n\nComo funciona o envio e o pagamento?`;
+            
+            // Codifica a mensagem para URL
+            const urlEncodedMessage = encodeURIComponent(mensagem);
+            
+            // Número do WhatsApp (Substitua pelo número real da marca)
+            const numeroWhatsApp = '5511999999999'; 
+            
+            // Abre o WhatsApp
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${urlEncodedMessage}`, '_blank');
+            
+            // (Opcional) Limpa o carrinho após enviar
+            // cart = [];
+            // updateCartUI();
+            // toggleCart();
         }
     </script>
 </body>
